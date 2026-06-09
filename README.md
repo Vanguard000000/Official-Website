@@ -1,4 +1,4 @@
-# Somya's Portfolio - AI-Assisted Coding Journey
+# Prakhar Singh - Portfolio
 
 A personal portfolio website documenting my one-month journey learning web development with AI assistance.
 
