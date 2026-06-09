@@ -8,27 +8,27 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="rocket-track"><div class="rocket-fill" id="rocketFill"></div></div>
-    <div class="rocket" id="rocket">🚀</div>
+
 
     <nav class="nav-container">
         <a href="index.html" class="logo" style="text-decoration:none">PS</a>
         <div class="nav-right">
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="portfolio.html" class="active">Portfolio</a></li>
-            <li><a href="frc.html">FRC</a></li>
-            <li><a href="goals.html">Goals</a></li>
-            <li><a href="journey.html">Journey</a></li>
-        </ul>
             <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
             <div class="menu-dropdown" id="menuDropdown">
-            <button id="darkModeToggle">☀️ Light Mode</button>
-        </div>
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="skills.html">Skills</a>
+                <a href="portfolio.html" class="active">Portfolio</a>
+                <a href="frc.html">FRC</a>
+                <a href="goals.html">Goals</a>
+                <a href="journey.html">Journey</a>
+                <a href="contact.html">Contact</a>
+                <button id="darkModeToggle">☀️ Light Mode</button>
+            </div>
     </nav>
 
     <header class="subpage-hero">
@@ -38,93 +38,58 @@
     </header>
 
     <main class="subpage-body">
-        <h2>Club Involvement</h2>
 
-        <div class="portfolio-showcase">
-            <div class="showcase-card" style="grid-column:1/-1">
-                <div class="showcase-image" style="background:linear-gradient(135deg,#00d4ff,#7c3aed);font-size:2.5rem;color:#fff;height:180px">🔭</div>
-                <h3>TSA — Technology Student Association</h3>
-                <p>I participated in the <strong>Engineering Design</strong> category, where my team and I designed and built a <strong>pocket-sized telescope</strong>. The project focused on making astronomy accessible through a compact, functional optical device. Our design and presentation earned a spot at the <strong>state-level competition</strong>.</p>
-                <p style="margin-top:12px">This experience taught me the full engineering design process: identifying a need, brainstorming solutions, prototyping, testing, iterating, and presenting technical work to judges.</p>
+        <div class="flip-grid">
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-inner">
+                    <div class="flip-front">
+                        <span class="flip-icon">⚡</span>
+                        <h3 class="flip-title">Activities</h3>
+                        <p class="flip-sub">TSA, research, scouting, FRC, projects</p>
+                        <span class="flip-hint">tap to flip</span>
+                    </div>
+                    <div class="flip-back">
+                        <h3>Activities & Projects</h3>
+                        <ul class="flip-list">
+                            <li>🔭 TSA — pocket telescope, state qualifier</li>
+                            <li>🧪 SEFH — gut microbiome research</li>
+                            <li>🏕️ BSA — patrol member, SPL scribe</li>
+                            <li>🦅 Eagle Scout service project</li>
+                            <li>🌐 Personal website</li>
+                            <li>🤖 FRC Robotics — Chips #324</li>
+                        </ul>
+                        <a href="activities.html" class="flip-link">View full page →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-inner">
+                    <div class="flip-front">
+                        <span class="flip-icon">🤝</span>
+                        <h3 class="flip-title">Volunteering</h3>
+                        <p class="flip-sub">Food bank, aquarium, school, beach cleanup</p>
+                        <span class="flip-hint">tap to flip</span>
+                    </div>
+                    <div class="flip-back">
+                        <h3>Volunteering</h3>
+                        <ul class="flip-list">
+                            <li>🥫 Houston Food Bank — 20 hours</li>
+                            <li>🌿 Moody Gardens — 110 hours</li>
+                            <li>🏫 Creekside Intermediate — NJHS</li>
+                            <li>🏖️ Jamaica Beach cleanup</li>
+                        </ul>
+                        <a href="volunteering.html" class="flip-link">View full page →</a>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <h2>Research Projects</h2>
-
-        <div class="portfolio-showcase">
-            <div class="showcase-card" style="grid-column:1/-1">
-                <div class="showcase-image" style="background:linear-gradient(135deg,#f59e0b,#7c3aed);font-size:2.5rem;color:#fff;height:180px">🧪</div>
-                <h3>SEFH — Effects of Artificial Sweeteners on Gut Microbiome</h3>
-                <p>In 7th grade, I <strong>qualified for SEFH</strong> (Science and Engineering Fair of Houston) by conducting an independent research project on how common sweeteners affect <em>Lactobacillus</em>, a key genus in the human gut microbiome.</p>
-                <p style="margin-top:12px">I tested <strong>sucrose, aspartame, fructose, and other artificial sweeteners</strong> to measure their impact on bacterial growth. The results showed that <strong>aspartame was particularly adverse to the gut microbiome</strong>, inhibiting Lactobacillus growth significantly compared to natural sugars.</p>
-                <p style="margin-top:12px">This project sparked my interest in the intersection of biology, chemistry, and data analysis — skills I now apply to engineering problems.</p>
-            </div>
-        </div>
-
-        <h2>Scouting</h2>
-
-        <div class="portfolio-showcase">
-            <div class="showcase-card" style="grid-column:1/-1">
-                <div class="showcase-image" style="background:linear-gradient(135deg,#7c3aed,#00d4ff);font-size:2.5rem;color:#fff;height:180px">🏕️</div>
-                <h3>BSA — Boy Scouts of America</h3>
-                <p>I am an <strong>active contributing patrol member</strong> and currently serve as <strong>scribe for the SPL</strong> (Senior Patrol Leader), having served two terms in this role.</p>
-                <p style="margin-top:12px">As scribe, I take minutes at patrol leaders' council meetings, track attendance and advancement, and communicate key information to the troop. This role has developed my leadership, communication, and organizational skills — and taught me how to work effectively within a team toward shared goals.</p>
-            </div>
-
-            <div class="showcase-card" style="grid-column:1/-1">
-                <div class="showcase-image" style="background:linear-gradient(135deg,#f59e0b,#00d4ff);font-size:2.5rem;color:#fff;height:180px">🦅</div>
-                <h3>Eagle Scout Service Project</h3>
-                <p>For my Eagle Scout rank, I am planning and leading a service project that benefits my community. The project involves coordinating volunteers, managing materials and budgets, and seeing a meaningful improvement project through from start to finish.</p>
-                <p style="margin-top:12px">Through this process I demonstrate leadership, project management, and a commitment to service — the core values of the Eagle Scout award.</p>
-            </div>
-
-            <div class="showcase-card" style="grid-column:1/-1">
-                <div class="showcase-image" style="background:linear-gradient(135deg,#00d4ff,#f59e0b);font-size:2.5rem;color:#fff;height:180px">🌐</div>
-                <h3>Personal Website — Brand Building</h3>
-                <p>I am building this website from scratch using HTML, CSS, and JavaScript with AI assistance. It reflects my personal brand as an aspiring aerospace professional — combining a clean space-themed aesthetic with clear storytelling about my projects, volunteer work, and goals.</p>
-                <p style="margin-top:12px">This site is a living project that evolves as I learn new skills, and it serves as my central hub for sharing my journey in STEM, scouting, and service.</p>
-            </div>
-
-            <div class="showcase-card" style="grid-column:1/-1">
-                <div class="showcase-image" style="background:linear-gradient(135deg,#e53e3e,#7c3aed);font-size:2.5rem;color:#fff;height:180px">🤖</div>
-                <h3>FRC Robotics — Chips Team #324</h3>
-                <p>I am aspiring to join the <strong>FRC Chips team #324</strong> robotics team, a competitive robotics program that builds industrial-size robots for the FIRST Robotics Competition. I am eager to apply my engineering mindset, CAD skills, and hands-on building experience to contribute to the team's success.</p>
-                <p style="margin-top:12px">Joining FRC is a key goal for me — it combines my passion for aerospace, mechanical design, and teamwork into one incredible experience.</p>
-            </div>
-        </div>
-
-        <h2>Volunteering</h2>
-
-        <div class="portfolio-showcase" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
-            <div class="showcase-card">
-                <div class="showcase-image" style="background:linear-gradient(135deg,#e53e3e,#f59e0b);font-size:2.5rem;color:#fff;height:140px">🥫</div>
-                <h3>Houston Food Bank</h3>
-                <p><strong>20 hours</strong> — I volunteered at the Houston Food Bank sorting and packaging food for distribution to families in need across the Greater Houston area.</p>
-            </div>
-
-            <div class="showcase-card">
-                <div class="showcase-image" style="background:linear-gradient(135deg,#38a169,#00d4ff);font-size:2.5rem;color:#fff;height:140px">🌿</div>
-                <h3>Moody Gardens — Galveston</h3>
-                <p><strong>110 hours</strong> — I volunteered at Moody Gardens in Galveston, assisting with educational programs, event support, and maintaining the botanical gardens and aquarium exhibits.</p>
-            </div>
-
-            <div class="showcase-card">
-                <div class="showcase-image" style="background:linear-gradient(135deg,#7c3aed,#38a169);font-size:2.5rem;color:#fff;height:140px">🏫</div>
-                <h3>Creekside Intermediate School — NJHS</h3>
-                <p>Through <strong>National Junior Honor Society</strong>, I volunteered at my middle school, Creekside Intermediate, supporting teachers, tutoring students, and helping with school events.</p>
-            </div>
-
-            <div class="showcase-card">
-                <div class="showcase-image" style="background:linear-gradient(135deg,#00d4ff,#f59e0b);font-size:2.5rem;color:#fff;height:140px">🏖️</div>
-                <h3>Jamaica Beach — Galveston, TX</h3>
-                <p>I participated in <strong>beach cleanup</strong> efforts at Jamaica Beach in Galveston, Texas, helping remove trash and debris to protect coastal wildlife and preserve the natural beauty of the shoreline.</p>
-            </div>
-        </div>
     </main>
 
     <footer class="footer">
         <div class="container">
-            <p>Exploring the future | Prakhar Singh | 2026</p>
+            <p class="copyright">© 2026 Prakhar Singh</p>
         </div>
     </footer>
 

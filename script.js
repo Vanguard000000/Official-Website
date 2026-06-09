@@ -14,122 +14,34 @@ const observer = new IntersectionObserver(
 
 document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
-/* ── Animate progress bars (re-triggers on scroll, excluding JS card) ── */
-const progressObserver = new IntersectionObserver(
+/* ── Hero section reveal (re-triggers on scroll back to top) ── */
+const heroObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
-      const bar = entry.target.querySelector('.progress');
-      if (!bar) return;
-      if (entry.isIntersecting) {
-        if (bar.dataset.playing === 'true') return;
-        bar.dataset.playing = 'true';
-        bar.removeAttribute('data-filled');
-        const w = bar.dataset.width || bar.style.width || '0%';
-        bar.style.transition = 'none';
-        bar.style.width = '0%';
-        void bar.offsetHeight;
-        bar.style.transition = '';
-        bar.style.width = w;
-      } else {
-        bar.dataset.playing = 'false';
-      }
+      const els = entry.target.querySelectorAll('.hero-title, .hero-motto, .hero-subtitle, .hero-tagline, .cta-button');
+      els.forEach((el) => el.classList.toggle('visible', entry.isIntersecting));
     });
   },
   { threshold: 0.3 }
 );
 
-document.querySelectorAll('.skill-card').forEach((el, i) => {
-  if (i !== 2) progressObserver.observe(el);
-});
+const hero = document.querySelector('.hero');
+if (hero) heroObserver.observe(hero);
 
-/* ── Trigger JS progress bar after all card slide animations settle ── */
-const jsCard = document.querySelector('.skill-card:nth-child(3)');
-const jsProgress = jsCard?.querySelector('.progress');
-
-function animateJsBar() {
-  if (!jsProgress || jsProgress.dataset.playing === 'true') return;
-  jsProgress.dataset.playing = 'true';
-  jsProgress.removeAttribute('data-filled');
-  const w = jsProgress.dataset.width || jsProgress.style.width || '0%';
-  jsProgress.style.transition = 'none';
-  jsProgress.style.width = '0%';
-  void jsProgress.offsetHeight;
-  jsProgress.style.transition = '';
-  jsProgress.style.width = w;
-}
-
-function resetJsBar() {
-  if (!jsProgress) return;
-  jsProgress.dataset.playing = 'false';
-  jsProgress.removeAttribute('data-filled');
-}
-
-if (jsCard && jsProgress) {
-  const cs = getComputedStyle(jsCard);
-  const dur = parseFloat(cs.transitionDuration) * 1000 || 700;
-  const del = parseFloat(cs.transitionDelay) * 1000 || 240;
-  const waitMs = dur + del + 350;
-  let timer = null;
-
-  const revealCheck = new MutationObserver((mutations) => {
-    mutations.forEach((m) => {
-      if (m.type === 'attributes' && m.attributeName === 'class') {
-        if (jsCard.classList.contains('visible')) {
-          if (timer) clearTimeout(timer);
-          timer = setTimeout(animateJsBar, waitMs);
-        }
-      }
+/* ── About section reveal (requires 80% visible) ── */
+const aboutObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      entry.target.classList.toggle('visible', entry.isIntersecting);
     });
-  });
-  revealCheck.observe(jsCard, { attributes: true });
+  },
+  { threshold: 0.8 }
+);
 
-  const jsObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) {
-          resetJsBar();
-          if (timer) { clearTimeout(timer); timer = null; }
-        }
-      });
-    },
-    { threshold: 0 }
-  );
-  jsObserver.observe(jsCard);
-}
+const aboutSection = document.querySelector('.about');
+if (aboutSection) aboutObserver.observe(aboutSection);
 
-/* ── Spark burst on JS skill progress completion ── */
-if (jsProgress) {
-  jsProgress.addEventListener('transitionend', () => {
-    const w = jsProgress.style.width;
-    if (!w || w === '0%' || w === '0px') return;
-    jsProgress.setAttribute('data-filled', '');
-    const rect = jsProgress.getBoundingClientRect();
-    const x = rect.right;
-    const y = rect.top + rect.height / 2;
-    for (let i = 0; i < 14; i++) {
-      const s = document.createElement('div');
-      s.className = 'spark';
-      const size = 3 + Math.random() * 5;
-      const angle = Math.random() * Math.PI * 2;
-      const dist = 30 + Math.random() * 60;
-      const dx = Math.cos(angle) * dist;
-      const dy = Math.sin(angle) * dist;
-      const hue = Math.random() > 0.5 ? 190 : 270;
-      s.style.cssText = `
-        left:${x}px; top:${y}px;
-        width:${size}px; height:${size}px;
-        background:hsl(${hue}, 80%, 60%);
-        box-shadow:0 0 ${size * 3}px hsl(${hue}, 80%, 60%);
-      `;
-      document.body.appendChild(s);
-      requestAnimationFrame(() => {
-        s.style.transform = `translate(${dx}px, ${dy}px) scale(0)`;
-        s.style.opacity = '0';
-      });
-      setTimeout(() => s.remove(), 700);
-    }
-  });
-}
+
 
 /* ── Navbar shrink on scroll ── */
 const nav = document.querySelector('.nav-container');
@@ -159,7 +71,7 @@ function updateActiveLink() {
 if (hashLinks.length) window.addEventListener('scroll', updateActiveLink);
 
 /* ── Smooth scroll for hash nav links ── */
-document.querySelectorAll('.nav-links a[href^="#"]').forEach((a) => {
+document.querySelectorAll('a[href^="#"]').forEach((a) => {
   a.addEventListener('click', (e) => {
     e.preventDefault();
     const target = document.querySelector(a.getAttribute('href'));
@@ -167,40 +79,7 @@ document.querySelectorAll('.nav-links a[href^="#"]').forEach((a) => {
   });
 });
 
-/* ── Rocket scroll progress ── */
-const rocket = document.getElementById('rocket');
-const rocketFill = document.getElementById('rocketFill');
-const track = document.querySelector('.rocket-track');
-
-function updateRocket() {
-  const scrollY = window.scrollY;
-  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-  const pct = maxScroll > 0 ? Math.min(scrollY / maxScroll, 1) : 0;
-
-  if (rocketFill) {
-    rocketFill.style.height = `${pct * 100}%`;
-  }
-
-  if (rocket && track) {
-    const r = track.getBoundingClientRect();
-    const centerX = window.innerWidth - 24 - 2 - 15;
-    const y = r.top + pct * r.height;
-
-    const scale = 0.8 + pct * 3;
-    rocket.style.fontSize = `${scale}rem`;
-    rocket.style.left = `${centerX}px`;
-    rocket.style.top = `${y}px`;
-    rocket.style.transform = 'translate(-50%, -50%) rotate(135deg)';
-
-    track.style.width = `${4 + pct * 16}px`;
-  }
-}
-
-window.addEventListener('scroll', updateRocket);
-window.addEventListener('resize', updateRocket);
-updateRocket();
-
-/* ── Animated counter ── */
+/* ── Metric counter animation ── */
 function animateCounter(el) {
   const target = parseInt(el.dataset.target, 10);
   const duration = 1500;
@@ -216,24 +95,53 @@ function animateCounter(el) {
   requestAnimationFrame(tick);
 }
 
-const counterObserver = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const num = entry.target.querySelector('.counter-number');
-        if (num && !num.dataset.played) {
-          num.dataset.played = 'true';
-          animateCounter(num);
-        }
-        counterObserver.unobserve(entry.target);
-      }
-    });
-  },
-  { threshold: 0.5 }
-);
+setTimeout(() => {
+  document.querySelectorAll('.metric-number').forEach((el) => {
+    el.textContent = '0';
+    animateCounter(el);
+  });
+}, 600);
 
-document.querySelectorAll('.counter-card').forEach((el) => counterObserver.observe(el));
+/* ── Cursor trail (only while moving) ── */
+(function() {
+  const container = document.createElement('div');
+  container.className = 'cursor-trail';
+  document.documentElement.appendChild(container);
 
+  let x = 0, y = 0;
+  let interval = null;
+  let idleTimer = null;
+
+  function spawn() {
+    const p = document.createElement('div');
+    p.className = 'trail-particle';
+    const size = 5 + Math.random() * 9;
+    const hue = Math.random() > 0.5 ? 190 + Math.random() * 40 : 260 + Math.random() * 40;
+    const sat = 70 + Math.random() * 30;
+    const light = 50 + Math.random() * 30;
+    p.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;background:hsl(${hue},${sat}%,${light}%);box-shadow:0 0 ${size*3}px hsl(${hue},${sat}%,${light}%)`;
+    container.appendChild(p);
+    setTimeout(() => p.remove(), 800);
+  }
+
+  function start() {
+    if (interval) return;
+    spawn();
+    interval = setInterval(spawn, 35);
+  }
+
+  function stop() {
+    if (interval) { clearInterval(interval); interval = null; }
+  }
+
+  document.addEventListener('mousemove', (e) => {
+    x = e.clientX;
+    y = e.clientY;
+    start();
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(stop, 120);
+  });
+})();
 /* ── Hamburger menu ── */
 const hamburger = document.getElementById('hamburgerBtn');
 const dropdown = document.getElementById('menuDropdown');
@@ -281,47 +189,49 @@ if (dateEl) {
   dateEl.textContent = `${mm}/${dd}/${yyyy}`;
 }
 
-/* ── Cursor trail particles ── */
-const trail = document.createElement('div');
-trail.className = 'cursor-trail';
-document.body.appendChild(trail);
+/* ── Scroll-to-top button ── */
+(function() {
+  const btn = document.createElement('button');
+  btn.className = 'scroll-top-btn';
+  btn.setAttribute('aria-label', 'Scroll to top');
+  btn.innerHTML = '↑';
+  document.body.appendChild(btn);
 
-let mouseX = 0, mouseY = 0;
-let particles = [];
-const maxParticles = 20;
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 300);
+  });
 
-document.addEventListener('mousemove', (e) => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-});
+  function smoothScrollToTop() {
+    const start = window.scrollY;
+    if (start < 1) return;
+    document.documentElement.style.scrollBehavior = 'auto';
 
-function spawnTrailParticle() {
-  const p = document.createElement('div');
-  p.className = 'trail-particle';
-  const size = 4 + Math.random() * 6;
-  const hue = Math.random() > 0.5 ? 190 : 270;
-  p.style.cssText = `
-    left:${mouseX}px; top:${mouseY}px;
-    width:${size}px; height:${size}px;
-    background:hsl(${hue}, 80%, 60%);
-    box-shadow:0 0 ${size * 2}px hsl(${hue}, 80%, 60%);
-  `;
-  trail.appendChild(p);
-  particles.push(p);
+    let velocity = Math.max(start * 0.0167, 1);
+    let lastDecay = performance.now();
 
-  if (particles.length > maxParticles) {
-    const old = particles.shift();
-    old.remove();
+    function tick(now) {
+      const currentY = window.scrollY;
+
+      if (now - lastDecay >= 500) {
+        velocity *= 0.5;
+        lastDecay = now;
+      }
+
+      const step = Math.ceil(velocity);
+
+      if (currentY <= step) {
+        window.scrollTo(0, 0);
+        document.documentElement.style.scrollBehavior = '';
+        return;
+      }
+
+      window.scrollTo(0, currentY - step);
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
   }
 
-  requestAnimationFrame(() => { p.style.opacity = '0'; p.style.transform = 'scale(0)'; });
+  btn.addEventListener('click', smoothScrollToTop);
+})();
 
-  setTimeout(() => { p.remove(); }, 600);
-}
 
-let trailTick = 0;
-document.addEventListener('mousemove', () => {
-  trailTick++;
-  if (trailTick % 2 !== 0) return;
-  spawnTrailParticle();
-});
