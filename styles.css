@@ -21,6 +21,290 @@
   --transition: 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+/* ── Seasonal Themes ── */
+
+/* ── Summer: Light & Warm ── */
+html.season-summer {
+  --space-bg: #fef9ef;
+  --space-bg2: #fff8e7;
+  --space-bg3: #ffedcc;
+  --primary: #f59e0b;
+  --primary-dark: #d97706;
+  --primary-rgb: 245, 158, 11;
+  --primary-glow: rgba(var(--primary-rgb), 0.25);
+  --accent: #ef4444;
+  --accent-glow: rgba(239, 68, 68, 0.2);
+  --flame: #f97316;
+  --text: #5c3d1a;
+  --text-muted: #8b7355;
+  --border: rgba(0, 0, 0, 0.08);
+  --glass: rgba(255, 255, 255, 0.6);
+  --glass-hover: rgba(255, 255, 255, 0.8);
+}
+
+html.season-summer body::before { opacity: 0.2; }
+
+html.season-summer .hero {
+  background: linear-gradient(180deg, #feebc8 0%, #fed7aa 50%, #fdba74 100%);
+}
+
+html.season-summer .subpage-hero {
+  background: linear-gradient(180deg, #feebc8 0%, #fed7aa 50%, #fdba74 100%);
+}
+
+/* ── Celestial background ── */
+.celestial-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.celestial-bg .cbody {
+  position: absolute;
+  border-radius: 50%;
+  animation: cfloat 25s ease-in-out infinite;
+}
+
+.celestial-bg .cbody.ring::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200%;
+  height: 35%;
+  border: 2.5px solid currentColor;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotateX(70deg);
+  opacity: 0.5;
+}
+
+.celestial-bg .cbody.star {
+  animation: ctwinkle 4s ease-in-out infinite;
+}
+
+.celestial-bg .cbody.sun {
+  box-shadow: 0 0 80px currentColor, 0 0 160px currentColor;
+}
+
+@keyframes cfloat {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(15px, -20px); }
+  66% { transform: translate(-10px, 12px); }
+}
+
+@keyframes ctwinkle {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.4); }
+}
+
+/* content sits above background */
+.hero, .subpage-hero, main, .footer { position: relative; z-index: 1; }
+
+html.season-summer .hero .hero-subtitle { color: var(--primary); }
+
+html.season-summer .footer {
+  background: #ffedcc;
+  --text-muted: #8b7355;
+}
+
+html.season-summer .menu-dropdown {
+  background: rgba(255, 248, 231, 0.95);
+}
+
+html.season-summer .nav-scrolled {
+  background: rgba(255, 248, 231, 0.88);
+}
+
+html.season-summer .project-card,
+html.season-summer .skill-card,
+html.season-summer .flip-card,
+html.season-summer .about-card,
+html.season-summer .journal-entry {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Fall: Light & Warm ── */
+html.season-fall {
+  --space-bg: #fff7ed;
+  --space-bg2: #ffedd5;
+  --space-bg3: #fed7aa;
+  --primary: #d97706;
+  --primary-dark: #b45309;
+  --primary-rgb: 217, 119, 6;
+  --primary-glow: rgba(var(--primary-rgb), 0.25);
+  --accent: #dc2626;
+  --accent-glow: rgba(220, 38, 38, 0.2);
+  --flame: #ea580c;
+  --text: #431407;
+  --text-muted: #9a6b4a;
+  --border: rgba(0, 0, 0, 0.08);
+  --glass: rgba(255, 255, 255, 0.6);
+  --glass-hover: rgba(255, 255, 255, 0.8);
+}
+
+html.season-fall body::before { opacity: 0.2; }
+
+html.season-fall .hero {
+  background: linear-gradient(180deg, #fed7aa 0%, #fdba74 50%, #fb923c 100%);
+}
+
+html.season-fall .subpage-hero {
+  background: linear-gradient(180deg, #fed7aa 0%, #fdba74 50%, #fb923c 100%);
+}
+
+html.season-fall .hero .hero-subtitle { color: var(--primary); }
+
+html.season-fall .footer {
+  background: #fed7aa;
+  --text-muted: #9a6b4a;
+}
+
+html.season-fall .menu-dropdown {
+  background: rgba(255, 247, 237, 0.95);
+}
+
+html.season-fall .nav-scrolled {
+  background: rgba(255, 247, 237, 0.88);
+}
+
+html.season-fall .project-card,
+html.season-fall .skill-card,
+html.season-fall .flip-card,
+html.season-fall .about-card,
+html.season-fall .journal-entry {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Winter: White, Blue & Evergreen ── */
+html.season-winter {
+  --space-bg: #f8fafc;
+  --space-bg2: #f1f5f9;
+  --space-bg3: #e2e8f0;
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  --primary-rgb: 59, 130, 246;
+  --primary-glow: rgba(var(--primary-rgb), 0.25);
+  --accent: #059669;
+  --accent-glow: rgba(5, 150, 105, 0.2);
+  --flame: #64748b;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: rgba(0, 0, 0, 0.08);
+  --glass: rgba(255, 255, 255, 0.6);
+  --glass-hover: rgba(255, 255, 255, 0.8);
+}
+
+html.season-winter body::before { opacity: 0.15; }
+
+html.season-winter .hero {
+  background: linear-gradient(180deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%);
+}
+
+html.season-winter .subpage-hero {
+  background: linear-gradient(180deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%);
+}
+
+html.season-winter .hero .hero-subtitle { color: var(--primary); }
+
+html.season-winter .footer {
+  background: #e2e8f0;
+  --text-muted: #64748b;
+}
+
+html.season-winter .menu-dropdown {
+  background: rgba(248, 250, 252, 0.95);
+}
+
+html.season-winter .nav-scrolled {
+  background: rgba(248, 250, 252, 0.88);
+}
+
+html.season-winter .project-card,
+html.season-winter .skill-card,
+html.season-winter .flip-card,
+html.season-winter .about-card,
+html.season-winter .journal-entry {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Spring: Bloom & Fresh ── */
+html.season-spring {
+  --space-bg: #f0fdf4;
+  --space-bg2: #f0fdf4;
+  --space-bg3: #dcfce7;
+  --primary: #16a34a;
+  --primary-dark: #15803d;
+  --primary-rgb: 22, 163, 74;
+  --primary-glow: rgba(var(--primary-rgb), 0.25);
+  --accent: #ec4899;
+  --accent-glow: rgba(236, 72, 153, 0.2);
+  --flame: #eab308;
+  --text: #14532d;
+  --text-muted: #6b8f71;
+  --border: rgba(0, 0, 0, 0.08);
+  --glass: rgba(255, 255, 255, 0.6);
+  --glass-hover: rgba(255, 255, 255, 0.8);
+}
+
+html.season-spring body::before { opacity: 0.2; }
+
+html.season-spring .hero {
+  background: linear-gradient(180deg, #dcfce7 0%, #bbf7d0 50%, #86efac 100%);
+}
+
+html.season-spring .subpage-hero {
+  background: linear-gradient(180deg, #dcfce7 0%, #bbf7d0 50%, #86efac 100%);
+}
+
+html.season-spring .hero .hero-subtitle { color: var(--primary); }
+
+html.season-spring .footer {
+  background: #dcfce7;
+  --text-muted: #6b8f71;
+}
+
+html.season-spring .menu-dropdown {
+  background: rgba(240, 253, 244, 0.95);
+}
+
+html.season-spring .nav-scrolled {
+  background: rgba(240, 253, 244, 0.88);
+}
+
+html.season-spring .project-card,
+html.season-spring .skill-card,
+html.season-spring .flip-card,
+html.season-spring .about-card,
+html.season-spring .journal-entry {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Idle animation ── */
+@keyframes idleBreathe {
+  0%, 100% { transform: scale(1); }
+  15% { transform: scale(1.02); }
+  30% { transform: scale(0.99); }
+  50% { transform: scale(1.01); }
+}
+
+@keyframes idleWobble {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(1deg); }
+  40% { transform: rotate(-1deg); }
+  60% { transform: rotate(0.5deg); }
+}
+
+@keyframes idleGlow {
+  0%, 100% { box-shadow: 0 0 8px var(--primary-glow); }
+  50% { box-shadow: 0 0 20px var(--primary-glow); }
+}
+
+.idle-breathe { animation: idleBreathe 0.8s ease-in-out; }
+.idle-wobble { animation: idleWobble 0.6s ease-in-out; }
+.idle-glow { animation: idleGlow 1s ease-in-out; }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 h2, h3 { font-family: 'Inter', sans-serif; font-weight: 700; }
@@ -1196,6 +1480,72 @@ body {
 }
 
 .back-link:hover { color: var(--primary); }
+
+/* ── Season countdown widget ── */
+.season-countdown {
+  position: fixed;
+  bottom: 96px;
+  right: 32px;
+  z-index: 998;
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  min-width: 190px;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+}
+
+.season-countdown .sc-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.season-countdown .sc-emoji {
+  margin-bottom: 4px;
+}
+
+.season-countdown .sc-season {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+.season-countdown .sc-time {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.5px;
+}
+
+.season-countdown .sc-tz {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+  opacity: 0.6;
+}
+
+@media (max-width: 600px) {
+  .season-countdown {
+    bottom: 80px;
+    right: 16px;
+    padding: 10px 14px;
+    min-width: 140px;
+  }
+  .season-countdown .sc-season { font-size: 0.85rem; }
+  .season-countdown .sc-time { font-size: 0.95rem; }
+}
+
+/* ── Clear fixed widget overlap ── */
+main { padding-bottom: 200px; }
 
 /* ── Scroll-to-top button ── */
 .scroll-top-btn {
