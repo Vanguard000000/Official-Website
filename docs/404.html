@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Lost in Space | Prakhar Singh</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 24px;
+            overflow: hidden;
+        }
+
+        body::before { display: none; }
+
+        .astro-404 {
+            font-size: 6rem;
+            margin-bottom: 24px;
+            animation: astroDrift 4s ease-in-out infinite;
+        }
+
+        @keyframes astroDrift {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-12px) rotate(-3deg); }
+            75% { transform: translateY(8px) rotate(3deg); }
+        }
+
+        .error-code {
+            font-size: 5rem;
+            font-weight: 800;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+
+        .error-msg {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .error-sub {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 32px;
+        }
+
+        .back-home {
+            display: inline-block;
+            padding: 14px 36px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            text-decoration: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 1rem;
+            transition: transform var(--transition), box-shadow var(--transition);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .back-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px var(--primary-glow);
+        }
+
+        .stars-404 {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars-404" id="stars"></div>
+
+    <div class="astro-404">🧑‍🚀</div>
+    <div class="error-code">404</div>
+    <p class="error-msg">Lost in space!</p>
+    <p class="error-sub">The page you're looking for drifted into the void.</p>
+    <a href="index.html" class="back-home">Return to Earth →</a>
+
+    <script>
+        (function() {
+            const container = document.getElementById('stars');
+            for (let i = 0; i < 80; i++) {
+                const s = document.createElement('div');
+                s.className = 'star';
+                s.style.left = Math.random() * 100 + '%';
+                s.style.top = Math.random() * 100 + '%';
+                s.style.animationDelay = Math.random() * 3 + 's';
+                s.style.width = s.style.height = (1 + Math.random() * 2) + 'px';
+                container.appendChild(s);
+            }
+        })();
+    </script>
+</body>
+</html>

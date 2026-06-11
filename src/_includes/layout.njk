@@ -5,43 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{{ description }}">
     <title>{{ title }}</title>
-    <link rel="stylesheet" href="{{ '/css/styles.css' | url }}">
+    <link rel="stylesheet" href="{{ '/styles.css' | url }}">
 </head>
 <body>
-    {% set navItems = [
-        { url: '/', label: 'Home' },
-        { url: '/about/', label: 'About' },
-        { url: '/skills/', label: 'Skills' },
-        { url: '/portfolio/', label: 'Portfolio' },
-        { url: '/frc/', label: 'FRC' },
-        { url: '/goals/', label: 'Goals' },
-        { url: '/journey/', label: 'Journey' },
-        { url: '/contact/', label: 'Contact' }
-    ] %}
-
     <nav class="nav-container">
-        <a href="{{ '/' | url }}" class="logo">PS</a>
+        <a href="{{ '/index.html' | url }}" class="logo">PS</a>
         <div class="nav-right">
             <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </button>
             <div class="menu-dropdown" id="menuDropdown">
-                {% for item in navItems %}
-                <a href="{{ item.url | url }}"{% if loop.index0 == navIndex %} class="active"{% endif %}>{{ item.label }}</a>
+                {% if navIndex == 0 %}
+                <a href="#projects">Projects</a>
+                {% endif %}
+                {% set pages = [
+                    { file: 'index.html', label: 'Home' },
+                    { file: 'about.html', label: 'About' },
+                    { file: 'skills.html', label: 'Skills' },
+                    { file: 'portfolio.html', label: 'Portfolio' },
+                    { file: 'frc.html', label: 'FRC' },
+                    { file: 'goals.html', label: 'Goals' },
+                    { file: 'journey.html', label: 'Journey' },
+                    { file: 'contact.html', label: 'Contact' }
+                ] %}
+                {% for p in pages %}
+                <a href="{{ ('/' + p.file) | url }}"{% if loop.index0 > 0 and loop.index0 == navIndex %} class="active"{% endif %}>{{ p.label }}</a>
                 {% endfor %}
                 <button id="darkModeToggle">☀️ Light Mode</button>
             </div>
         </div>
     </nav>
 
-    <div class="page-wrap">
-    {% if navIndex > 0 %}
-    <a href="{{ '/' | url }}" class="back-link">&larr; Back to Home</a>
-    {% endif %}
     {{ content | safe }}
-    </div>
 
     <footer class="footer">
         <div class="container">
@@ -49,8 +44,8 @@
         </div>
     </footer>
 
-    <script src="{{ '/js/animation.js' | url }}"></script>
-    <script src="{{ '/js/feature.js' | url }}"></script>
-    <script src="{{ '/js/theme.js' | url }}"></script>
+    <script src="{{ '/animation.js' | url }}"></script>
+    <script src="{{ '/feature.js' | url }}"></script>
+    <script src="{{ '/theme.js' | url }}"></script>
 </body>
 </html>
