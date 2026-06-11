@@ -7,6 +7,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.ignores.add("src/404.html");
   eleventyConfig.ignores.add("src/assets/**/*");
   return {
+    pathPrefix: "/Official-Website/",
     dir: {
       input: "src",
       output: "docs",
