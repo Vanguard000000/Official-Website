@@ -1,0 +1,58 @@
+---
+layout: "layout.njk"
+navIndex: 3
+title: Portfolio | Prakhar Singh
+description: Portfolio overview - Prakhar Singh's projects, skills, and volunteering
+---
+
+<header class="subpage-hero">
+    <h1>Portfolio</h1>
+    <p>Choose a section to explore.</p>
+</header>
+
+<main class="subpage-body">
+    <div class="flip-grid">
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-inner">
+                <div class="flip-front">
+                    <div class="flip-icon">🔭</div>
+                    <div class="flip-title">Activities</div>
+                    <div class="flip-sub">TSA, SEFH, BSA, and FRC</div>
+                    <div class="flip-hint">Tap to flip</div>
+                </div>
+                <div class="flip-back">
+                    <h3>Activities</h3>
+                    <ul class="flip-list">
+                        <li>TSA Engineering Design</li>
+                        <li>SEFH Microbiome Research</li>
+                        <li>BSA Scouting</li>
+                        <li>FRC Robotics</li>
+                    </ul>
+                    <a href="/activities/" class="flip-link">Learn more →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+            <div class="flip-inner">
+                <div class="flip-front">
+                    <div class="flip-icon">🏕️</div>
+                    <div class="flip-title">Volunteering</div>
+                    <div class="flip-sub">Service in my community</div>
+                    <div class="flip-hint">Tap to flip</div>
+                </div>
+                <div class="flip-back">
+                    <h3>Volunteering</h3>
+                    <ul class="flip-list">
+                        <li>Houston Food Bank — 20 hrs</li>
+                        <li>Moody Gardens — 110 hrs</li>
+                        <li>Creekside NJHS</li>
+                        <li>Jamaica Beach Cleanup</li>
+                    </ul>
+                    <a href="/volunteering/" class="flip-link">Learn more →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
