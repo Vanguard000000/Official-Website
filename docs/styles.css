@@ -921,6 +921,11 @@ body {
   gap: 24px;
 }
 
+a.project-card, a.project-card:link, a.project-card:visited {
+  text-decoration: none;
+  color: inherit;
+}
+
 .project-card {
   background: var(--glass);
   border-radius: var(--radius);
