@@ -9,7 +9,7 @@
 </head>
 <body>
     <nav class="nav-container">
-        <a href="{{ '/index.html' | url }}" class="logo">PS</a>
+        <a href="{{ '/' | url }}" class="logo">PS</a>
         <div class="nav-right">
             <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
                 <span></span><span></span><span></span>
@@ -19,17 +19,17 @@
                 <a href="#projects">Projects</a>
                 {% endif %}
                 {% set pages = [
-                    { file: 'index.html', label: 'Home' },
-                    { file: 'about.html', label: 'About' },
-                    { file: 'skills.html', label: 'Skills' },
-                    { file: 'portfolio.html', label: 'Portfolio' },
-                    { file: 'frc.html', label: 'FRC' },
-                    { file: 'goals.html', label: 'Goals' },
-                    { file: 'journey.html', label: 'Journey' },
-                    { file: 'contact.html', label: 'Contact' }
+                    { slug: '', label: 'Home' },
+                    { slug: 'about', label: 'About' },
+                    { slug: 'skills', label: 'Skills' },
+                    { slug: 'portfolio', label: 'Portfolio' },
+                    { slug: 'frc', label: 'FRC' },
+                    { slug: 'goals', label: 'Goals' },
+                    { slug: 'journey', label: 'Journey' },
+                    { slug: 'contact', label: 'Contact' }
                 ] %}
                 {% for p in pages %}
-                <a href="{{ ('/' + p.file) | url }}"{% if loop.index0 > 0 and loop.index0 == navIndex %} class="active"{% endif %}>{{ p.label }}</a>
+                <a href="{{ ('/' + p.slug + '/') | url }}"{% if loop.index0 > 0 and loop.index0 == navIndex %} class="active"{% endif %}>{{ p.label }}</a>
                 {% endfor %}
                 <button id="darkModeToggle">☀️ Light Mode</button>
             </div>
