@@ -17,6 +17,6 @@ Your nav and footer are copy-pasted identically across all ~10 HTML pages. Test 
 
 ## Done when
 
-- [ ] Adding a nav link means editing exactly **one** file — prove it by having the agent add a test link, watching it appear everywhere, then reverting
-- [ ] Every page shows the correct active-link highlight
-- [ ] You can explain the tradeoff of the approach you picked in two sentences
+- [ X] Adding a nav link means editing exactly **one** file — prove it by having the agent add a test link, watching it appear everywhere, then reverting
+- [X ] Every page shows the correct active-link highlight
+- [X ] You can explain the tradeoff of the approach you picked in two sentences

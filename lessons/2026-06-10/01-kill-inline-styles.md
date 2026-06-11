@@ -23,6 +23,6 @@ Inline styles can't be reused, can't be themed (your seasonal themes can't touch
 
 ## Done when
 
-- [✅] Your agent can prove zero inline styles remain — and you've seen the proof, not just trusted the claim
-- [✅ ] No visual changes on any page
-- [✅ ] *You* named the classes, not the agent
+- [ X] Your agent can prove zero inline styles remain — and you've seen the proof, not just trusted the claim
+- [ X] No visual changes on any page
+- [ X] *You* named the classes, not the agent

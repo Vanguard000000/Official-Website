@@ -17,6 +17,6 @@
 
 ## Done when
 
-- [ ] The module split matches *your* proposed design, not one the agent invented
-- [ ] The theme conflict is fixed and you can explain what was wrong
-- [ ] At least one feature is gone, with your reasoning in the commit message
+- [ X] The module split matches *your* proposed design, not one the agent invented
+- [ X] The theme conflict is fixed and you can explain what was wrong
+- [ X] At least one feature is gone, with your reasoning in the commit message

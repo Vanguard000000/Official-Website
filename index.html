@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Personal portfolio showcasing AI-assisted coding skills">
     <title>Prakhar's Portfolio - AI-Assisted Coding Journey</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 
     <header class="hero">
         <nav class="nav-container">
-            <a href="index.html" class="logo">PS</a>
+            <a href="index.html" class="logo" style="text-decoration:none">PS</a>
             <div class="nav-right">
                 <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
                     <span></span>
@@ -46,7 +46,7 @@
             <div class="container">
                 <h2 class="section-title">Projects</h2>
                 <div class="projects-grid">
-                    <article class="project-card reveal interact--click" onclick="location.href='portfolio.html'">
+                    <article class="project-card reveal" onclick="location.href='portfolio.html'" style="cursor:pointer">
                         <div class="project-image"></div>
                         <div class="project-info">
                             <h3>Portfolio</h3>
@@ -59,7 +59,7 @@
                             </div>
                         </div>
                     </article>
-                    <article class="project-card reveal interact--click" onclick="location.href='goals.html'">
+                    <article class="project-card reveal" onclick="location.href='goals.html'" style="cursor:pointer">
                         <div class="project-image"></div>
                         <div class="project-info">
                             <h3>Goals</h3>
@@ -93,6 +93,8 @@
         </div>
     </footer>
 
-    <script src="js/script.js"></script>
+    <script src="animation.js"></script>
+    <script src="feature.js"></script>
+    <script src="theme.js"></script>
 </body>
 </html>
