@@ -1,0 +1,10 @@
+node_modules/
+_site/
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
+session-*.md
+
+# Microsoft Office lock files
+~$*
