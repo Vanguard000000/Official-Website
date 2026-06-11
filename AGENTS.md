@@ -16,13 +16,27 @@ This file provides guidance for AI agents working on this project.
 ## Project Structure
 
 ```text
-Example_Setup/
-├── index.html          # Main HTML file
-├── styles.css          # Stylesheet (to be created)
-├── script.js           # JavaScript (to be created)
+├── index.html          # Home page
+├── about.html          # About page
+├── skills.html         # Skills page
+├── portfolio.html      # Portfolio hub (flip cards)
+├── activities.html     # Activities detail
+├── volunteering.html   # Volunteering detail
+├── frc.html            # FRC Robotics
+├── goals.html          # Goals & timeline
+├── journey.html        # Learning journey
+├── contact.html        # Contact/social
+├── 404.html            # Custom 404 page
+├── styles.css          # All styling
+├── animation.js        # Scroll reveals, metrics, idle
+├── feature.js          # Navbar, hamburger, scroll-to-top
+├── theme.js            # Dark/light, seasonal, celestial, countdown
 ├── AGENTS.md           # This file
 ├── README.md           # Project documentation
-└── Instructions.md     # Class instructions
+├── lessons/            # Daily lesson plans
+├── journal/            # Daily journal entries
+├── resume/             # Resume (HTML + .docx)
+└── .opencode/skills/   # Agent skill definitions
 ```
 
 ## Development Guidelines
@@ -45,10 +59,10 @@ Example_Setup/
 ## Current Status
 
 - [x] index.html - Complete structure with all sections
-- [ ] styles.css - Needs creation
-- [ ] script.js - Needs creation
-- [ ] README.md - Needs creation
-- [ ] Deploy to Netlify/Vercel
+- [x] styles.css - Complete styling with seasonal themes, light mode, responsive design
+- [x] script.js - Split into animation.js, feature.js, theme.js
+- [x] README.md - Updated with current project structure and live URL
+- [x] Deploy to GitHub Pages - Live at vanguard000000.github.io/Official-Website
 
 ## Goals for This Project
 

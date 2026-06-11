@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume — Prakhar Singh</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            color: #0f172a;
+            background: #fff;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 32px;
+            line-height: 1.5;
+            font-size: 10.5pt;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid #0f172a;
+        }
+
+        .header h1 {
+            font-size: 20pt;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            font-size: 10pt;
+            color: #334155;
+        }
+
+        .header a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .section {
+            margin-bottom: 16px;
+        }
+
+        .section h2 {
+            font-size: 11pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #0f172a;
+            margin-bottom: 8px;
+            padding-bottom: 2px;
+        }
+
+        .education-line {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .education-line strong {
+            font-size: 11pt;
+        }
+
+        .item {
+            margin-bottom: 10px;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 11pt;
+        }
+
+        .item-role {
+            font-style: italic;
+            font-size: 10pt;
+            color: #334155;
+            margin-bottom: 2px;
+        }
+
+        .bullets {
+            list-style: disc;
+            padding-left: 18px;
+            font-size: 10pt;
+        }
+
+        .bullets li {
+            margin-bottom: 3px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px 24px;
+        }
+
+        .skill-item {
+            font-size: 10pt;
+        }
+
+        .skill-item strong {
+            font-size: 10.5pt;
+        }
+
+        @media print {
+            body { margin: 0; padding: 0 40px; }
+            .section { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Prakhar Singh</h1>
+        <p>
+            League City, TX &bull;
+            <a href="mailto:prakhar20117@gmail.com">prakhar20117@gmail.com</a> &bull;
+            <a href="https://vanguard000000.github.io/Official-Website/">Website</a> &bull;
+            <a href="https://github.com/Vanguard000000">GitHub</a>
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Education</h2>
+        <div class="education-line">
+            <strong>Clear Springs High School</strong>
+            <span>Class of 2029</span>
+        </div>
+        <p style="font-size:10pt;color:#334155;margin-top:2px">Weighted GPA: 5.96 &bull; Unweighted GPA: 4.0</p>
+    </div>
+
+    <div class="section">
+        <h2>Activities</h2>
+
+        <div class="item">
+            <div class="item-header">
+                <span>TSA — Engineering Design</span>
+                <span>Oct 2025 – Feb 2026</span>
+            </div>
+            <div class="item-role">Team Member</div>
+            <ul class="bullets">
+                <li>Collaborated with 3 peers to design and prototype a pocket-sized telescope for mass production</li>
+                <li>Developed CAD models, project portfolio, and competition displays over a 5-month build cycle</li>
+                <li>Qualified for and competed at the district level</li>
+            </ul>
+        </div>
+
+        <div class="item">
+            <div class="item-header">
+                <span>SEFH — Gut Microbiome Research</span>
+                <span>2023 – 2024</span>
+            </div>
+            <div class="item-role">Independent Researcher</div>
+            <ul class="bullets">
+                <li>Designed and conducted experiment testing effects of sucrose, aspartame, fructose, and other sweeteners on Lactobacillus growth</li>
+                <li>Found aspartame to be particularly harmful to gut bacteria compared to natural sugars</li>
+                <li>Placed 1st at district; earned Honorable Mention at the Science and Engineering Fair of Houston (SEFH)</li>
+            </ul>
+        </div>
+
+        <div class="item">
+            <div class="item-header">
+                <span>Boy Scouts of America</span>
+                <span>2023 – Present</span>
+            </div>
+            <div class="item-role">Patrol Leader &amp; SPL Scribe</div>
+            <ul class="bullets">
+                <li>Led patrol as Patrol Leader; earned 2nd place in troop-wide cooking competition</li>
+                <li>Serve as scribe under the Senior Patrol Leader for two terms (1 year), recording minutes, tracking attendance, and managing troop communications</li>
+                <li>Working toward Eagle Scout rank with a self-directed service project</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Skills</h2>
+        <div class="skills-grid">
+            <div class="skill-item">
+                <strong>CAD Modeling</strong><br>
+                Designed mechanical models including an automaton, LEGO truck, scale theme park, and robot drivetrain components.
+            </div>
+            <div class="skill-item">
+                <strong>JavaScript</strong><br>
+                Built a functioning 2D runner game inspired by Flappy Bird; can create encoders, decryptors, and image filters adaptable as apps.
+            </div>
+            <div class="skill-item">
+                <strong>LLM-Assisted Development</strong><br>
+                Built this personal website from scratch using HTML, CSS, and JavaScript with AI collaboration. Skilled in prompt engineering, code review, and iterative debugging with LLMs.
+            </div>
+            <div class="skill-item">
+                <strong>Collaborative Problem Solving</strong><br>
+                Adaptable across independent research (SEFH) and team engineering (TSA). Confident in iterative design, prototyping, and presenting technical work.
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
