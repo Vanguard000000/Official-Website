@@ -7,3 +7,6 @@ session-*.md
 
 # Microsoft Office lock files
 ~$*
+
+# Eleventy dev server
+_site/
