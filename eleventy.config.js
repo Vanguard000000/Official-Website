@@ -4,6 +4,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "feature.js": "feature.js" });
   eleventyConfig.addPassthroughCopy({ "theme.js": "theme.js" });
   eleventyConfig.addPassthroughCopy({ "404.html": "404.html" });
+  eleventyConfig.addPassthroughCopy({ "mediapipe-lab": "mediapipe-lab" });
   eleventyConfig.ignores.add("src/404.html");
   eleventyConfig.ignores.add("src/assets/**/*");
   return {
