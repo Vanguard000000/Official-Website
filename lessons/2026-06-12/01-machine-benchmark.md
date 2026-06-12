@@ -64,7 +64,7 @@ Look for:
 
 ## Done when
 
-- [ ] `lessons/2026-06-12/results.md` exists.
-- [ ] All three demos have real results.
-- [ ] You can name the slowest demo on your machine.
-- [ ] You can explain one likely reason it is slower.
+- [X] `lessons/2026-06-12/results.md` exists.
+- [X]All three demos have real results.
+- [X] You can name the slowest demo on your machine.
+- [X]You can explain one likely reason it is slower.
