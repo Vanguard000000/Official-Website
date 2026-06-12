@@ -1,8 +1,8 @@
 module.exports = function (eleventyConfig) {
-  eleventyConfig.addPassthroughCopy({ "styles.css": "styles.css" });
-  eleventyConfig.addPassthroughCopy({ "animation.js": "animation.js" });
-  eleventyConfig.addPassthroughCopy({ "feature.js": "feature.js" });
-  eleventyConfig.addPassthroughCopy({ "theme.js": "theme.js" });
+  eleventyConfig.addPassthroughCopy({ "css/styles.css": "css/styles.css" });
+  eleventyConfig.addPassthroughCopy({ "js/animation.js": "js/animation.js" });
+  eleventyConfig.addPassthroughCopy({ "js/feature.js": "js/feature.js" });
+  eleventyConfig.addPassthroughCopy({ "js/theme.js": "js/theme.js" });
   eleventyConfig.addPassthroughCopy({ "404.html": "404.html" });
   eleventyConfig.addPassthroughCopy({ "mediapipe-lab": "mediapipe-lab" });
   eleventyConfig.ignores.add("src/404.html");
