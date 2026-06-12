@@ -34,10 +34,13 @@ const nodeSizeValueEl = document.getElementById("node-size-value");
 const smoothingSliderEl = document.getElementById("smoothing-slider");
 const smoothingValueEl = document.getElementById("smoothing-value");
 const expressionLabelEl = document.getElementById("expression-label");
+const calibrateBtnEl = document.getElementById("calibrate-btn");
+const calibrationIndicatorEl = document.getElementById("calibration-indicator");
 const swatchEls = Array.from(document.querySelectorAll(".swatch"));
 const defaultPlaceholderMessage = placeholderMessageEl.textContent;
 
 const colorState = { h: 190, s: 90, l: 57 };
+let baseline = null;
 const DEFAULT_SMOOTHING = 0.6;
 const CAMERA_SOURCE_FRONT = "@user";
 const CAMERA_SOURCE_REAR = "@environment";
@@ -102,6 +105,7 @@ let requiresExternalBrowser = false;
 let cameraStartInFlight = false;
 let selectedCameraSource = preferredCamera.source;
 let selectedCameraLabel = preferredCamera.label;
+let pendingCalibration = false;
 const smoothedFaces = new Map();
 
 function setStatus(message, tone = "info") {
@@ -337,6 +341,20 @@ function updateFullMeshButton() {
   fullMeshBtnEl.textContent = showFullMesh ? "Full Mesh: On" : "Full Mesh: Off";
   fullMeshBtnEl.dataset.active = showFullMesh ? "true" : "false";
   fullMeshBtnEl.setAttribute("aria-pressed", String(showFullMesh));
+}
+
+function updateCalibrationUI() {
+  const calibrated = baseline !== null;
+  calibrateBtnEl.dataset.calibrated = calibrated ? "true" : "false";
+  calibrateBtnEl.textContent = calibrated ? "Recalibrate" : "Calibrate Neutral Face";
+  calibrateBtnEl.disabled = !webcamRunning;
+  if (calibrated) {
+    calibrationIndicatorEl.textContent = "Calibrated";
+    calibrationIndicatorEl.hidden = false;
+  } else {
+    calibrationIndicatorEl.textContent = "";
+    calibrationIndicatorEl.hidden = true;
+  }
 }
 
 function asHsl(h, s, l, alpha = 1) {
@@ -698,6 +716,20 @@ function renderLoop() {
       if (cats && cats.length) {
         const bs = {};
         for (const c of cats) { bs[c.categoryName] = c.score; }
+
+        if (pendingCalibration) {
+          baseline = {
+            jawOpen: bs.jawOpen ?? 0,
+            smile: ((bs.mouthSmileLeft ?? 0) + (bs.mouthSmileRight ?? 0)) / 2,
+            frown: ((bs.mouthFrownLeft ?? 0) + (bs.mouthFrownRight ?? 0)) / 2,
+            browUp: bs.browInnerUp ?? 0,
+            squint: ((bs.eyeSquintLeft ?? 0) + (bs.eyeSquintRight ?? 0)) / 2,
+          };
+          pendingCalibration = false;
+          updateCalibrationUI();
+          setStatus("Baseline captured. Detection now calibrated to your face.", "success");
+        }
+
         expressionLabelEl.textContent = ` \u00b7 ${detectExpressionFromBlendshapes(bs) || "uncertain"}`;
         if (!window._blendshapeNamesLogged) {
           window._blendshapeNamesLogged = true;
@@ -719,6 +751,20 @@ function detectExpressionFromBlendshapes(bs) {
   const jawOpen = bs.jawOpen;
   const browUp = bs.browInnerUp;
   const squint = (bs.eyeSquintLeft + bs.eyeSquintRight) / 2;
+
+  if (baseline) {
+    const dJaw = jawOpen - baseline.jawOpen;
+    const dSmile = smile - baseline.smile;
+    const dFrown = frown - baseline.frown;
+    const dBrow = browUp - baseline.browUp;
+    const dSquint = squint - baseline.squint;
+
+    if (dJaw > 0.2) return "Mouth Open";
+    if (dSmile > 0.15 && dFrown < 0.05) return "Smile";
+    if (dBrow > 0.15) return "Brows Up";
+    if (dSquint > 0.15) return "Squint";
+    return "";
+  }
 
   if (jawOpen > 0.5) return "Mouth Open";
   if (smile > 0.4 && frown < 0.15) return "Smile";
@@ -774,6 +820,7 @@ function stopCamera(
   setPlaceholderMessage(placeholderText);
   statsEl.hidden = true;
   resetStats();
+  updateCalibrationUI();
   if (statusText) setStatus(statusText, tone);
   updateCameraButton();
 }
@@ -824,6 +871,7 @@ async function startCamera() {
     statsEl.hidden = false;
     setStatus("Camera active. Face mesh is running.", "success");
     updateCameraButton();
+    updateCalibrationUI();
     renderLoop();
   } catch (error) {
     webcamRunning = false;
@@ -918,6 +966,16 @@ fullMeshBtnEl.addEventListener("click", () => {
   updateFullMeshButton();
 });
 
+calibrateBtnEl.addEventListener("click", () => {
+  if (!webcamRunning) return;
+  pendingCalibration = true;
+  baseline = null;
+  calibrationIndicatorEl.textContent = "Hold neutral face...";
+  calibrationIndicatorEl.hidden = false;
+  calibrateBtnEl.disabled = true;
+  setStatus("Hold a neutral face. Capturing baseline in a moment...", "info");
+});
+
 cameraSourceSelect.addEventListener("change", async () => {
   selectedCameraSource = cameraSourceSelect.value;
   selectedCameraLabel = getSelectedCameraLabel(cameraSourceSelect);
@@ -966,5 +1024,6 @@ window.addEventListener("beforeunload", () => {
 syncColorControls();
 updateSmoothingLabel();
 updateFullMeshButton();
+updateCalibrationUI();
 updateCameraButton();
 loadModel();

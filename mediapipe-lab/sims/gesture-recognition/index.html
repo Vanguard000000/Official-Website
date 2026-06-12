@@ -374,6 +374,36 @@
       font-size: 11px;
     }
 
+    #gesture-guide {
+      display: grid;
+      gap: 8px;
+    }
+    .gesture-list {
+      list-style: none;
+      display: grid;
+      gap: 5px;
+      padding: 0;
+      margin: 0;
+    }
+    .gesture-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .gesture-name {
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+    .gesture-desc {
+      color: #64748b;
+      text-align: right;
+      font-size: 10px;
+    }
+
     @media (max-width: 900px) {
       body {
         padding: 10px;
@@ -513,6 +543,19 @@
         <span id="smoothing-value">65%</span>
       </div>
       <input id="smoothing-slider" type="range" min="0" max="95" step="1" value="65" />
+
+      <div id="gesture-guide">
+        <span class="group-title">Gesture Commands</span>
+        <ul class="gesture-list">
+          <li><span class="gesture-name">Open Palm</span><span class="gesture-desc">Cycle color</span></li>
+          <li><span class="gesture-name">Closed Fist</span><span class="gesture-desc">Disable camera</span></li>
+          <li><span class="gesture-name">Pointing Up</span><span class="gesture-desc">Grow nodes</span></li>
+          <li><span class="gesture-name">Thumb Up</span><span class="gesture-desc">Yellow overlay</span></li>
+          <li><span class="gesture-name">Thumb Down</span><span class="gesture-desc">Black overlay</span></li>
+          <li><span class="gesture-name">Victory</span><span class="gesture-desc">Confetti burst</span></li>
+          <li><span class="gesture-name">ILoveYou</span><span class="gesture-desc">Hearts burst</span></li>
+        </ul>
+      </div>
     </aside>
   </main>
 
@@ -603,7 +646,6 @@
       "#ef4444", "#f97316", "#eab308", "#22c55e", "#14b8a6",
       "#06b6d4", "#3b82f6", "#6366f1", "#a855f7", "#ec4899", "#f8fafc"
     ];
-    const GESTURE_COOLDOWN_MS = 800;
     const CONFETTI_COUNT = 60;
     const CONFETTI_COLORS = ["#ef4444","#f97316","#eab308","#22c55e","#06b6d4","#a855f7","#ec4899"];
     const CONFETTI_CLEANUP_MS = 2500;
