@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MediaPipe Machine Check</title>
+    <title>MediaPipe Vision Lab</title>
     <style>
       :root {
         --bg: #101114;
@@ -173,11 +173,11 @@
   <body>
     <main>
       <header>
-        <h1>MediaPipe Machine Check</h1>
+        <h1>MediaPipe Vision Lab</h1>
         <p>
-          Run these three local demos on each machine. The goal is to confirm
-          that the browser can load MediaPipe WASM, download the bundled model,
-          open the camera, and keep the overlay responsive.
+          Browser-based computer vision demos powered by MediaPipe. Each demo
+          runs locally in your browser using on-device machine learning — no
+          server processing, no data sent anywhere.
         </p>
       </header>
 
@@ -187,47 +187,47 @@
             <strong>Pose Estimation</strong>
             <p>Full body pose tracking with optional hand landmarks.</p>
           </div>
-          <span>Launch pose test</span>
+          <span>Launch Pose Estimation</span>
         </a>
         <a class="demo" href="./sims/face-mesh/index.html">
           <div>
             <strong>Face Mesh</strong>
             <p>Face landmark mesh, contours, iris points, and smoothing.</p>
           </div>
-          <span>Launch face test</span>
+          <span>Launch Face Mesh</span>
         </a>
         <a class="demo" href="./sims/gesture-recognition/index.html">
           <div>
             <strong>Gesture Recognition</strong>
             <p>Hand landmark tracking with the gesture recognizer task.</p>
           </div>
-          <span>Launch hand test</span>
+          <span>Launch Gesture Recognition</span>
         </a>
       </section>
 
-      <section class="notes" aria-label="Class checklist">
+      <section class="notes" aria-label="Technical details">
         <div class="panel">
-          <h2>Record For Each Demo</h2>
-          <ol>
-            <li>Does the model load without an error?</li>
-            <li>Does the browser request camera permission?</li>
-            <li>Does the overlay follow the person smoothly?</li>
-            <li>What FPS does the demo report after 10 seconds?</li>
-          </ol>
-        </div>
-        <div class="panel warning">
-          <h2>Run Locally</h2>
+          <h2>How It Works</h2>
           <ul>
-            <li>Start a local server from the repo root.</li>
-            <li>Open <code>/mediapipe-lab/</code> from <code>localhost</code>.</li>
-            <li>Do not open the HTML file directly from Finder.</li>
+            <li>MediaPipe Tasks Vision runs in the browser via WebAssembly.</li>
+            <li>All models are bundled locally — no CDN, no network requests after page load.</li>
+            <li>Camera access uses the browser's built-in <code>getUserMedia</code> API.</li>
+            <li>Overlay rendering is done on a 2D canvas, synchronized with the video feed.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h2>Requirements</h2>
+          <ul>
+            <li>A modern browser: Chrome, Edge, Safari, or Opera.</li>
+            <li>A camera connected and available to the browser.</li>
+            <li>Run from <code>localhost</code> — opening files directly breaks module loading and camera permissions.</li>
           </ul>
         </div>
       </section>
 
       <footer>
         MediaPipe task models and WASM files are bundled in this folder so the
-        exercise does not depend on a CDN during class.
+        demos run fully offline after the initial page load.
       </footer>
     </main>
   </body>
