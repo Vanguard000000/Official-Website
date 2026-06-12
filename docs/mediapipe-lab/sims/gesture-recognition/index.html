@@ -408,6 +408,17 @@
         max-width: calc(100% - 32px);
       }
     }
+
+    @keyframes confettiFall {
+      0%   { transform:translateY(0) translateX(0) rotate(0deg); opacity:1; }
+      100% { transform:translateY(105vh) translateX(var(--drift)) rotate(var(--rot)); opacity:0; }
+    }
+
+    @keyframes heartBurst {
+      0%   { transform:translateY(0) translateX(0) scale(0.4); opacity:1; }
+      50%  { opacity:1; }
+      100% { transform:translateY(-60vh) translateX(var(--drift)) scale(1.2); opacity:0; }
+    }
   </style>
 </head>
 <body>
@@ -586,6 +597,14 @@
     const CAMERA_SOURCE_FRONT = "@user";
     const CAMERA_SOURCE_REAR = "@environment";
     const smoothedHands = new Map();
+
+    const GESTURE_COOLDOWN_MS = 800;
+    const GESTURE_COLOR_CYCLE = [
+      "#ef4444", "#f97316", "#eab308", "#22c55e", "#14b8a6",
+      "#06b6d4", "#3b82f6", "#6366f1", "#a855f7", "#ec4899", "#f8fafc"
+    ];
+    let gestureCooldownUntil = 0;
+    let colorCycleIndex = 0;
 
     function clamp(value, min, max) {
       return Math.min(max, Math.max(min, value));
@@ -937,6 +956,49 @@
       fpsEl.textContent = "0";
     }
 
+    function spawnConfetti() {
+      const container = document.getElementById("container");
+      const colors = ["#ef4444","#f97316","#eab308","#22c55e","#06b6d4","#a855f7","#ec4899"];
+      for (let i = 0; i < 60; i++) {
+        const particle = document.createElement("div");
+        const size = Math.random() * 8 + 4;
+        const x = Math.random() * 100;
+        const delay = Math.random() * 0.6;
+        const drift = (Math.random() - 0.5) * 120;
+        particle.style.cssText = `
+          position:absolute;z-index:10;pointer-events:none;
+          width:${size}px;height:${size * (Math.random() * 0.6 + 0.4)}px;
+          background:${colors[Math.floor(Math.random() * colors.length)]};
+          left:${x}%;top:-10px;border-radius:2px;
+          animation:confettiFall ${1.4 + Math.random() * 1.2}s ease-out ${delay}s forwards;
+          --drift:${drift}px;--rot:${Math.random() * 720 - 360}deg;
+        `;
+        container.appendChild(particle);
+        setTimeout(() => particle.remove(), 2500);
+      }
+    }
+
+    function spawnHearts() {
+      const container = document.getElementById("container");
+      for (let i = 0; i < 24; i++) {
+        const heart = document.createElement("div");
+        const size = Math.random() * 18 + 14;
+        const x = Math.random() * 90 + 5;
+        const delay = Math.random() * 0.5;
+        const drift = (Math.random() - 0.5) * 80;
+        heart.style.cssText = `
+          position:absolute;z-index:10;pointer-events:none;
+          width:${size}px;height:${size}px;
+          left:${x}%;top:100%;color:#ec4899;
+          animation:heartBurst ${2 + Math.random() * 1.5}s ease-out ${delay}s forwards;
+          --drift:${drift}px;
+        `;
+        heart.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" width="100%" height="100%"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+        container.appendChild(heart);
+        setTimeout(() => heart.remove(), 3000);
+      }
+    }
+
     function resizeCanvasToViewport() {
       const rect = video.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
@@ -1113,6 +1175,9 @@
       if (topGesture) {
         gestureLabelEl.textContent = topGesture.categoryName;
         gestureConfidenceEl.textContent = `${(topGesture.score * 100).toFixed(1)}%`;
+        if (topGesture.score >= 0.7) {
+          dispatchGestureCommand(topGesture.categoryName);
+        }
         return;
       }
 
@@ -1124,6 +1189,46 @@
 
       gestureLabelEl.textContent = "--";
       gestureConfidenceEl.textContent = "--";
+    }
+
+    function dispatchGestureCommand(gesture) {
+      const now = performance.now();
+      if (now < gestureCooldownUntil) return;
+      gestureCooldownUntil = now + GESTURE_COOLDOWN_MS;
+
+      switch (gesture) {
+        case "Closed_Fist":
+          if (webcamRunning) {
+            stopCamera("Camera disabled via Closed Fist gesture.", "info",
+              "Camera disabled. Click Enable Camera or use a gesture to resume.");
+          }
+          break;
+        case "Open_Palm":
+          colorCycleIndex = (colorCycleIndex + 1) % GESTURE_COLOR_CYCLE.length;
+          applyOverlayColor(GESTURE_COLOR_CYCLE[colorCycleIndex]);
+          setStatus(`Overlay color cycled to next — ${GESTURE_COLOR_CYCLE[colorCycleIndex]}`, "ready");
+          break;
+        case "Pointing_Up":
+          setNodeSize(Math.min(nodeRadius + 0.25, 14));
+          setStatus(`Node size increased to ${nodeRadius.toFixed(1)}px`, "info");
+          break;
+        case "Thumb_Down":
+          applyOverlayColor("#000000");
+          setStatus("Overlay set to black", "info");
+          break;
+        case "Thumb_Up":
+          applyOverlayColor("#eab308");
+          setStatus("Overlay set to happy yellow!", "ready");
+          break;
+        case "Victory":
+          spawnConfetti();
+          setStatus("Victory! Confetti!", "ready");
+          break;
+        case "ILoveYou":
+          spawnHearts();
+          setStatus("Love! Hearts bursting!", "ready");
+          break;
+      }
     }
 
     function stopCamera(
