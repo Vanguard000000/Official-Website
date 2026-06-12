@@ -33,6 +33,7 @@ const nodeSizeSliderEl = document.getElementById("node-size");
 const nodeSizeValueEl = document.getElementById("node-size-value");
 const smoothingSliderEl = document.getElementById("smoothing-slider");
 const smoothingValueEl = document.getElementById("smoothing-value");
+const expressionLabelEl = document.getElementById("expression-label");
 const swatchEls = Array.from(document.querySelectorAll(".swatch"));
 const defaultPlaceholderMessage = placeholderMessageEl.textContent;
 
@@ -690,8 +691,40 @@ function renderLoop() {
       }
     }
     updateFpsCounter(nowMs);
+
+    if (results.faceBlendshapes) {
+      const classification = results.faceBlendshapes[0];
+      const cats = classification?.categories;
+      if (cats && cats.length) {
+        const bs = {};
+        for (const c of cats) { bs[c.categoryName] = c.score; }
+        expressionLabelEl.textContent = ` \u00b7 ${detectExpressionFromBlendshapes(bs) || "uncertain"}`;
+        if (!window._blendshapeNamesLogged) {
+          window._blendshapeNamesLogged = true;
+          console.log("Blendshape names:", cats.map(c => c.categoryName));
+        }
+      } else {
+        expressionLabelEl.textContent = " \u00b7 [no cats]";
+      }
+    } else {
+      expressionLabelEl.textContent = ` \u00b7 [keys: ${Object.keys(results).join(",")}]`;
+    }
   }
   animationFrameId = requestAnimationFrame(renderLoop);
+}
+
+function detectExpressionFromBlendshapes(bs) {
+  const smile = (bs.mouthSmileLeft + bs.mouthSmileRight) / 2;
+  const frown = (bs.mouthFrownLeft + bs.mouthFrownRight) / 2;
+  const jawOpen = bs.jawOpen;
+  const browUp = bs.browInnerUp;
+  const squint = (bs.eyeSquintLeft + bs.eyeSquintRight) / 2;
+
+  if (jawOpen > 0.5) return "Mouth Open";
+  if (smile > 0.4 && frown < 0.15) return "Smile";
+  if (browUp > 0.4) return "Brows Up";
+  if (squint > 0.4) return "Squint";
+  return "";
 }
 
 function getModelErrorMessage(error) {
@@ -834,7 +867,7 @@ async function loadModel() {
       },
       runningMode: "VIDEO",
       numFaces: 1,
-      outputFaceBlendshapes: false,
+      outputFaceBlendshapes: true,
       outputFacialTransformationMatrixes: false,
     });
     modelReady = true;
