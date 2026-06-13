@@ -37,3 +37,9 @@ Overlay stability: Smooth across all three demos.
 
 Browser: _______Opera (non-GX)_____________     Machine: ___(Optiplex 7040-Windows)_________________     Date: ___6/12/26_______
 ```
+
+---
+
+## What did I change, and how do I know it works?
+
+I changed the face mesh tool to detect emotions using user calibrated face detection values that take the user's face's landmarks and subtract the baseline from the blendshapes in each frame, which is how the logic detects deviations in frames. By testing my face in the detector by showing different emotions, I found that the detector worked after calibration and detects four emotions fairly accurately.
