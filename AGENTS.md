@@ -93,6 +93,7 @@ Before creating or editing any skill, read `SKILLS_GUIDE.md`. It defines the loc
 - **a11y-check** — the accessibility pass (Skill #9); agent checks markup, student does the keyboard test
 - **deploy-site** — publish/update the live site on GitHub Pages and verify the live URL
 - **html-to-pdf** / **html-to-docx** — export HTML documents (e.g. the resume) to PDF or Word; the HTML is the source of truth
+- **journal-pdf** — format the daily `journal/*.md` entries into a standardized PDF report (e.g. the report for Tom); formats only, never writes journal content
 
 Adding or improving a skill is encouraged — that's Skill #8 (steering the agent) in practice.
 
