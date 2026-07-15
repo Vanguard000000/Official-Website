@@ -462,8 +462,8 @@ function syncCanvasSize() {
   if (canvasEl.width === width && canvasEl.height === height) return;
   canvasEl.width = width;
   canvasEl.height = height;
-  inferenceCanvasEl.width = width;
-  inferenceCanvasEl.height = height;
+  inferenceCanvasEl.width = Math.min(width,1280);
+  inferenceCanvasEl.height = Math.min(height,720);
 }
 
 function resetStats() {
