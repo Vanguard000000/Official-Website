@@ -58,7 +58,7 @@ Be ready to answer:
 
 ## Done when
 
-- [ ] Your benchmark table is complete.
-- [ ] Your project works from `localhost`.
-- [ ] You have at least one commit with a specific message.
-- [ ] You can demo without reading from the code the whole time.
+- [X] Your benchmark table is complete.
+- [X] Your project works from `localhost`.
+- [X] You have at least one commit with a specific message.
+- [X] You can demo without reading from the code the whole time.

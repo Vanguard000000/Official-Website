@@ -148,8 +148,8 @@ Good fit if you like games, coordinate systems, and immediate feedback.
 
 ## Done when
 
-- [ ] `plan.md` exists before code changes.
-- [ ] You built one option, not pieces of multiple options.
-- [ ] The demo still loads from `localhost`.
-- [ ] You tested with the camera on.
-- [ ] You can point to the exact MediaPipe result data your feature uses.
+- [X] `plan.md` exists before code changes.
+- [X] You built one option, not pieces of multiple options.
+- [X] The demo still loads from `localhost`.
+- [X] You tested with the camera on.
+- [X] You can point to the exact MediaPipe result data your feature uses.
