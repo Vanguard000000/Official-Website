@@ -374,6 +374,36 @@
       font-size: 11px;
     }
 
+    #gesture-guide {
+      display: grid;
+      gap: 8px;
+    }
+    .gesture-list {
+      list-style: none;
+      display: grid;
+      gap: 5px;
+      padding: 0;
+      margin: 0;
+    }
+    .gesture-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .gesture-name {
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+    .gesture-desc {
+      color: #64748b;
+      text-align: right;
+      font-size: 10px;
+    }
+
     @media (max-width: 900px) {
       body {
         padding: 10px;
@@ -450,6 +480,10 @@
         </div>
         <div class="chip">
           <span class="chip-label">FPS</span>
+          <span id="render-fps" class="chip-value">0</span>
+        </div>
+        <div class="chip">
+          <span class="chip-label">inference/sec</span>
           <span id="fps" class="chip-value">0</span>
         </div>
       </div>
@@ -513,6 +547,19 @@
         <span id="smoothing-value">65%</span>
       </div>
       <input id="smoothing-slider" type="range" min="0" max="95" step="1" value="65" />
+
+      <div id="gesture-guide">
+        <span class="group-title">Gesture Commands</span>
+        <ul class="gesture-list">
+          <li><span class="gesture-name">Open Palm</span><span class="gesture-desc">Cycle color</span></li>
+          <li><span class="gesture-name">Closed Fist</span><span class="gesture-desc">Disable camera</span></li>
+          <li><span class="gesture-name">Pointing Up</span><span class="gesture-desc">Grow nodes</span></li>
+          <li><span class="gesture-name">Thumb Up</span><span class="gesture-desc">Yellow overlay</span></li>
+          <li><span class="gesture-name">Thumb Down</span><span class="gesture-desc">Black overlay</span></li>
+          <li><span class="gesture-name">Victory</span><span class="gesture-desc">Confetti burst</span></li>
+          <li><span class="gesture-name">ILoveYou</span><span class="gesture-desc">Hearts burst</span></li>
+        </ul>
+      </div>
     </aside>
   </main>
 
@@ -552,6 +599,7 @@
     const gestureConfidenceEl = document.getElementById("gesture-confidence");
     const handCountEl = document.getElementById("hand-count");
     const fpsEl = document.getElementById("fps");
+    const renderFpsEl = document.getElementById("render-fps");
 
     const cameraToggleBtn = document.getElementById("camera-toggle");
     const cameraSourceSelect = document.getElementById("camera-source");
@@ -576,6 +624,8 @@
     let lastVideoTime = -1;
     let frameCount = 0;
     let lastFpsTime = performance.now();
+    let renderFrameCount = 0;
+    let lastRenderFpsTime = performance.now();
     let requiresPermissionReload = false;
     let cameraPermissionStatus = null;
     let requiresExternalBrowser = false;
@@ -603,7 +653,6 @@
       "#ef4444", "#f97316", "#eab308", "#22c55e", "#14b8a6",
       "#06b6d4", "#3b82f6", "#6366f1", "#a855f7", "#ec4899", "#f8fafc"
     ];
-    const GESTURE_COOLDOWN_MS = 800;
     const CONFETTI_COUNT = 60;
     const CONFETTI_COLORS = ["#ef4444","#f97316","#eab308","#22c55e","#06b6d4","#a855f7","#ec4899"];
     const CONFETTI_CLEANUP_MS = 2500;
@@ -960,6 +1009,7 @@
       gestureConfidenceEl.textContent = "--";
       handCountEl.textContent = "0";
       fpsEl.textContent = "0";
+      renderFpsEl.textContent = "0";
     }
 
     function spawnConfetti() {
@@ -1263,6 +1313,7 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       smoothedHands.clear();
       frameCount = 0;
+      renderFrameCount = 0;
       resetGestureOutput();
       if (statusMessage) {
         setStatus(statusMessage, tone);
@@ -1346,8 +1397,11 @@
         webcamRunning = true;
         lastVideoTime = -1;
         frameCount = 0;
+        renderFrameCount = 0;
         lastFpsTime = performance.now();
-        fpsEl.textContent = "0";
+        lastRenderFpsTime = performance.now();
+      fpsEl.textContent = "0";
+      renderFpsEl.textContent = "0";
         updateCameraToggleButton();
         placeholder.classList.add("hidden");
 
@@ -1421,6 +1475,13 @@
           frameCount = 0;
           lastFpsTime = nowMs;
         }
+      }
+
+      renderFrameCount += 1;
+      if (nowMs - lastRenderFpsTime >= 1000) {
+        renderFpsEl.textContent = String(renderFrameCount);
+        renderFrameCount = 0;
+        lastRenderFpsTime = nowMs;
       }
 
       animationFrameId = requestAnimationFrame(renderFrame);

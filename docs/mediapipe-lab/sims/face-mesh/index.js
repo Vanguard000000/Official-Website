@@ -19,12 +19,15 @@ const placeholderEl = document.getElementById("placeholder");
 const placeholderMessageEl = placeholderEl.querySelector(".placeholder-card p");
 const statusBadgeEl = document.getElementById("status-badge");
 const cameraBtnEl = document.getElementById("camera-btn");
-const cameraSourceSelect = document.getElementById("camera-source");
+const cameraSourceSelectEl = document.getElementById("camera-source");
 const showVideoFeedInputEl = document.getElementById("show-video-feed");
 const fullMeshBtnEl = document.getElementById("full-mesh-btn");
 const statsEl = document.getElementById("stats");
 const faceCountEl = document.getElementById("face-count");
 const fpsEl = document.getElementById("fps");
+const latencyEl = document.getElementById("latency");
+const inferencesEl = document.getElementById("inferences");
+const inputResEl = document.getElementById("input-res");
 const colorPreviewEl = document.getElementById("color-preview");
 const hueSliderEl = document.getElementById("hue-slider");
 const saturationSliderEl = document.getElementById("sat-slider");
@@ -34,10 +37,13 @@ const nodeSizeValueEl = document.getElementById("node-size-value");
 const smoothingSliderEl = document.getElementById("smoothing-slider");
 const smoothingValueEl = document.getElementById("smoothing-value");
 const expressionLabelEl = document.getElementById("expression-label");
+const calibrateBtnEl = document.getElementById("calibrate-btn");
+const calibrationIndicatorEl = document.getElementById("calibration-indicator");
 const swatchEls = Array.from(document.querySelectorAll(".swatch"));
 const defaultPlaceholderMessage = placeholderMessageEl.textContent;
 
 const colorState = { h: 190, s: 90, l: 57 };
+let baseline = null;
 const DEFAULT_SMOOTHING = 0.6;
 const CAMERA_SOURCE_FRONT = "@user";
 const CAMERA_SOURCE_REAR = "@environment";
@@ -95,6 +101,9 @@ let showFullMesh = true;
 let lastVideoTime = -1;
 let frameCount = 0;
 let lastFpsTimestamp = performance.now();
+let inferenceCount = 0;
+let lastInferenceTimestamp = performance.now();
+let latencyEstimate = 0;
 let animationFrameId = 0;
 let requiresPermissionRetry = false;
 let cameraPermissionStatus = null;
@@ -102,6 +111,7 @@ let requiresExternalBrowser = false;
 let cameraStartInFlight = false;
 let selectedCameraSource = preferredCamera.source;
 let selectedCameraLabel = preferredCamera.label;
+let pendingCalibration = false;
 const smoothedFaces = new Map();
 
 function setStatus(message, tone = "info") {
@@ -231,14 +241,14 @@ function createCameraOption(value, label) {
 }
 
 function resetCameraSourceOptions() {
-  cameraSourceSelect.replaceChildren(
+  cameraSourceSelectEl.replaceChildren(
     createCameraOption(CAMERA_SOURCE_FRONT, "Front / Default Camera"),
     createCameraOption(CAMERA_SOURCE_REAR, "Rear Camera")
   );
 }
 
 function hasCameraSourceOption(value) {
-  return Array.from(cameraSourceSelect.options).some((option) => option.value === value);
+  return Array.from(cameraSourceSelectEl.options).some((option) => option.value === value);
 }
 
 function getCameraSourceLabel(device, index) {
@@ -257,7 +267,7 @@ function getActiveCameraDeviceId() {
 async function refreshCameraSourceOptions() {
   resetCameraSourceOptions();
   if (!navigator.mediaDevices?.enumerateDevices) {
-    cameraSourceSelect.value = selectedCameraSource;
+    cameraSourceSelectEl.value = selectedCameraSource;
     return;
   }
 
@@ -266,7 +276,7 @@ async function refreshCameraSourceOptions() {
     devices = await navigator.mediaDevices.enumerateDevices();
   } catch (error) {
     if (error instanceof DOMException) {
-      cameraSourceSelect.value = selectedCameraSource;
+      cameraSourceSelectEl.value = selectedCameraSource;
       return;
     }
     throw error;
@@ -277,20 +287,20 @@ async function refreshCameraSourceOptions() {
   videoInputs.forEach((device, index) => {
     if (!device.deviceId || seenDeviceIds.has(device.deviceId)) return;
     seenDeviceIds.add(device.deviceId);
-    cameraSourceSelect.append(createCameraOption(device.deviceId, getCameraSourceLabel(device, index)));
+    cameraSourceSelectEl.append(createCameraOption(device.deviceId, getCameraSourceLabel(device, index)));
   });
-  appendRememberedCameraOption(cameraSourceSelect, selectedCameraSource, selectedCameraLabel);
+  appendRememberedCameraOption(cameraSourceSelectEl, selectedCameraSource, selectedCameraLabel);
 
   const activeDeviceId = getActiveCameraDeviceId();
   if (hasCameraSourceOption(selectedCameraSource)) {
-    cameraSourceSelect.value = selectedCameraSource;
+    cameraSourceSelectEl.value = selectedCameraSource;
   } else if (activeDeviceId && hasCameraSourceOption(activeDeviceId)) {
-    cameraSourceSelect.value = activeDeviceId;
+    cameraSourceSelectEl.value = activeDeviceId;
   } else {
-    cameraSourceSelect.value = CAMERA_SOURCE_FRONT;
+    cameraSourceSelectEl.value = CAMERA_SOURCE_FRONT;
   }
-  selectedCameraSource = cameraSourceSelect.value;
-  selectedCameraLabel = getSelectedCameraLabel(cameraSourceSelect);
+  selectedCameraSource = cameraSourceSelectEl.value;
+  selectedCameraLabel = getSelectedCameraLabel(cameraSourceSelectEl);
   savePreferredCamera(selectedCameraSource, selectedCameraLabel);
 }
 
@@ -337,6 +347,20 @@ function updateFullMeshButton() {
   fullMeshBtnEl.textContent = showFullMesh ? "Full Mesh: On" : "Full Mesh: Off";
   fullMeshBtnEl.dataset.active = showFullMesh ? "true" : "false";
   fullMeshBtnEl.setAttribute("aria-pressed", String(showFullMesh));
+}
+
+function updateCalibrationUI() {
+  const calibrated = baseline !== null;
+  calibrateBtnEl.dataset.calibrated = calibrated ? "true" : "false";
+  calibrateBtnEl.textContent = calibrated ? "Recalibrate" : "Calibrate Neutral Face";
+  calibrateBtnEl.disabled = !webcamRunning;
+  if (calibrated) {
+    calibrationIndicatorEl.textContent = "Calibrated";
+    calibrationIndicatorEl.hidden = false;
+  } else {
+    calibrationIndicatorEl.textContent = "";
+    calibrationIndicatorEl.hidden = true;
+  }
 }
 
 function asHsl(h, s, l, alpha = 1) {
@@ -444,15 +468,22 @@ function syncCanvasSize() {
   if (canvasEl.width === width && canvasEl.height === height) return;
   canvasEl.width = width;
   canvasEl.height = height;
-  inferenceCanvasEl.width = width;
-  inferenceCanvasEl.height = height;
+  inferenceCanvasEl.width = 640;
+  inferenceCanvasEl.height = 360;
+  inputResEl.textContent = `${inferenceCanvasEl.width}x${inferenceCanvasEl.height}`;
 }
 
 function resetStats() {
   faceCountEl.textContent = "0";
   fpsEl.textContent = "0";
+  latencyEl.textContent = "0";
+  inferencesEl.textContent = "0";
+  inputResEl.textContent = "0x0";
   frameCount = 0;
   lastFpsTimestamp = performance.now();
+  inferenceCount = 0;
+  lastInferenceTimestamp = performance.now();
+  latencyEstimate = 0;
 }
 
 function updateFpsCounter(nowMs) {
@@ -466,8 +497,8 @@ function updateFpsCounter(nowMs) {
 function computeCoverTransform() {
   const sourceWidth = videoEl.videoWidth;
   const sourceHeight = videoEl.videoHeight;
-  const targetWidth = canvasEl.width;
-  const targetHeight = canvasEl.height;
+  const targetWidth = inferenceCanvasEl.width;
+  const targetHeight = inferenceCanvasEl.height;
   if (!sourceWidth || !sourceHeight || !targetWidth || !targetHeight) {
     return null;
   }
@@ -671,7 +702,13 @@ function renderLoop() {
     }
     inferenceContext2d.clearRect(0, 0, coverTransform.targetWidth, coverTransform.targetHeight);
     drawCoveredVideo(inferenceContext2d, coverTransform);
+    const inferenceStartedAt = performance.now();
     const results = faceLandmarker.detectForVideo(inferenceCanvasEl, nowMs);
+    const latencyMs = performance.now() - inferenceStartedAt;
+    latencyEstimate = latencyEstimate
+      ? latencyEstimate * 0.85 + latencyMs * 0.15
+      : latencyMs;
+    latencyEl.textContent = String(Math.round(latencyEstimate));
     context2d.clearRect(0, 0, canvasEl.width, canvasEl.height);
     if (showVideoFeed) {
       context2d.drawImage(inferenceCanvasEl, 0, 0, canvasEl.width, canvasEl.height);
@@ -690,7 +727,12 @@ function renderLoop() {
         smoothedFaces.delete(key);
       }
     }
-    updateFpsCounter(nowMs);
+    inferenceCount += 1;
+    if (nowMs - lastInferenceTimestamp >= 1000) {
+      inferencesEl.textContent = String(inferenceCount);
+      inferenceCount = 0;
+      lastInferenceTimestamp = nowMs;
+    }
 
     if (results.faceBlendshapes) {
       const classification = results.faceBlendshapes[0];
@@ -698,6 +740,20 @@ function renderLoop() {
       if (cats && cats.length) {
         const bs = {};
         for (const c of cats) { bs[c.categoryName] = c.score; }
+
+        if (pendingCalibration) {
+          baseline = {
+            jawOpen: bs.jawOpen ?? 0,
+            smile: ((bs.mouthSmileLeft ?? 0) + (bs.mouthSmileRight ?? 0)) / 2,
+            frown: ((bs.mouthFrownLeft ?? 0) + (bs.mouthFrownRight ?? 0)) / 2,
+            browUp: bs.browInnerUp ?? 0,
+            squint: ((bs.eyeSquintLeft ?? 0) + (bs.eyeSquintRight ?? 0)) / 2,
+          };
+          pendingCalibration = false;
+          updateCalibrationUI();
+          setStatus("Baseline captured. Detection now calibrated to your face.", "success");
+        }
+
         expressionLabelEl.textContent = ` \u00b7 ${detectExpressionFromBlendshapes(bs) || "uncertain"}`;
         if (!window._blendshapeNamesLogged) {
           window._blendshapeNamesLogged = true;
@@ -710,6 +766,7 @@ function renderLoop() {
       expressionLabelEl.textContent = ` \u00b7 [keys: ${Object.keys(results).join(",")}]`;
     }
   }
+  updateFpsCounter(nowMs);
   animationFrameId = requestAnimationFrame(renderLoop);
 }
 
@@ -719,6 +776,20 @@ function detectExpressionFromBlendshapes(bs) {
   const jawOpen = bs.jawOpen;
   const browUp = bs.browInnerUp;
   const squint = (bs.eyeSquintLeft + bs.eyeSquintRight) / 2;
+
+  if (baseline) {
+    const dJaw = jawOpen - baseline.jawOpen;
+    const dSmile = smile - baseline.smile;
+    const dFrown = frown - baseline.frown;
+    const dBrow = browUp - baseline.browUp;
+    const dSquint = squint - baseline.squint;
+
+    if (dJaw > 0.2) return "Mouth Open";
+    if (dSmile > 0.15 && dFrown < 0.05) return "Smile";
+    if (dBrow > 0.15) return "Brows Up";
+    if (dSquint > 0.15) return "Squint";
+    return "";
+  }
 
   if (jawOpen > 0.5) return "Mouth Open";
   if (smile > 0.4 && frown < 0.15) return "Smile";
@@ -774,6 +845,7 @@ function stopCamera(
   setPlaceholderMessage(placeholderText);
   statsEl.hidden = true;
   resetStats();
+  updateCalibrationUI();
   if (statusText) setStatus(statusText, tone);
   updateCameraButton();
 }
@@ -824,6 +896,7 @@ async function startCamera() {
     statsEl.hidden = false;
     setStatus("Camera active. Face mesh is running.", "success");
     updateCameraButton();
+    updateCalibrationUI();
     renderLoop();
   } catch (error) {
     webcamRunning = false;
@@ -864,6 +937,7 @@ async function loadModel() {
     faceLandmarker = await FaceLandmarker.createFromOptions(vision, {
       baseOptions: {
         modelAssetPath: FACE_LANDMARKER_MODEL_PATH,
+        delegate: "GPU",
       },
       runningMode: "VIDEO",
       numFaces: 1,
@@ -918,9 +992,19 @@ fullMeshBtnEl.addEventListener("click", () => {
   updateFullMeshButton();
 });
 
-cameraSourceSelect.addEventListener("change", async () => {
-  selectedCameraSource = cameraSourceSelect.value;
-  selectedCameraLabel = getSelectedCameraLabel(cameraSourceSelect);
+calibrateBtnEl.addEventListener("click", () => {
+  if (!webcamRunning) return;
+  pendingCalibration = true;
+  baseline = null;
+  calibrationIndicatorEl.textContent = "Hold neutral face...";
+  calibrationIndicatorEl.hidden = false;
+  calibrateBtnEl.disabled = true;
+  setStatus("Hold a neutral face. Capturing baseline in a moment...", "info");
+});
+
+cameraSourceSelectEl.addEventListener("change", async () => {
+  selectedCameraSource = cameraSourceSelectEl.value;
+  selectedCameraLabel = getSelectedCameraLabel(cameraSourceSelectEl);
   savePreferredCamera(selectedCameraSource, selectedCameraLabel);
   if (!webcamRunning) return;
   stopCamera("Switching camera...");
@@ -966,5 +1050,6 @@ window.addEventListener("beforeunload", () => {
 syncColorControls();
 updateSmoothingLabel();
 updateFullMeshButton();
+updateCalibrationUI();
 updateCameraButton();
 loadModel();
