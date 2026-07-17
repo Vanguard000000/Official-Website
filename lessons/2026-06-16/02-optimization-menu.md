@@ -27,7 +27,7 @@ FPS while the model only needs to run 15–20 times a second to feel live.
 
 - Run inference every Nth frame (or on a timer) and keep drawing the last result
   every frame.
-- Pose Estimation already separates "processed FPS" from render FPS — read how it
+- Pose Estimation already separates "processed inference/sec" from render FPS — read how it
   does it before you write your own.
 - Measure: render FPS should rise, inferences/sec should drop, and the overlay
   should still feel responsive.

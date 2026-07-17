@@ -545,7 +545,8 @@
       <div id="stats" style="display:none;">
         <span id="pose-count">0</span> pose(s) &middot;
         <span id="hand-count">0</span> hand(s) &middot;
-        <span id="fps">0</span> processed FPS &middot;
+        <span id="render-fps">0</span> FPS &middot;
+        <span id="fps">0</span> inference/sec &middot;
         <span id="latency">0</span> ms
       </div>
 
@@ -836,6 +837,7 @@
     const poseCountEl = requireElement("pose-count");
     const handCountEl = requireElement("hand-count");
     const fpsEl = requireElement("fps");
+    const renderFpsEl = requireElement("render-fps");
     const latencyEl = requireElement("latency");
     const colorPreview = requireElement("color-preview");
     const hueSlider = requireElement("hue-slider");
@@ -877,6 +879,8 @@
     let lastVideoTime = -1;
     let processedFrameCount = 0;
     let lastFpsTick = performance.now();
+    let renderFrameCount = 0;
+    let lastRenderFpsTick = performance.now();
     let showVideoFeed = showVideoFeedInput.checked;
     let mirrorVideoFeed = mirrorVideoInput.checked;
     let showHandOverlay = showHandOverlayInput.checked;
@@ -2080,6 +2084,13 @@
         }
       }
 
+      renderFrameCount += 1;
+      if (now - lastRenderFpsTick >= 1000) {
+        renderFpsEl.textContent = String(renderFrameCount);
+        renderFrameCount = 0;
+        lastRenderFpsTick = now;
+      }
+
       if (now - lastFpsTick >= 1000) {
         fpsEl.textContent = String(processedFrameCount);
         processedFrameCount = 0;
@@ -2122,9 +2133,11 @@
       animationFrameId = 0;
       lastVideoTime = -1;
       processedFrameCount = 0;
+      renderFrameCount = 0;
       frameLatencyEstimate = 0;
       lastFrameSnapshot = null;
       fpsEl.textContent = "0";
+      renderFpsEl.textContent = "0";
       latencyEl.textContent = "0";
       poseCountEl.textContent = "0";
       qualityMetric.textContent = "--";
@@ -2181,9 +2194,11 @@
         updateCameraButton();
         setStatus("Detecting pose...", "ready");
         processedFrameCount = 0;
+        renderFrameCount = 0;
         frameLatencyEstimate = 0;
         resetHandTrackingState();
         lastFpsTick = performance.now();
+        lastRenderFpsTick = performance.now();
         for (const track of stream.getTracks()) {
           track.onended = () => {
             if (webcamRunning) {

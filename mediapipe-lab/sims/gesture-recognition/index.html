@@ -480,6 +480,10 @@
         </div>
         <div class="chip">
           <span class="chip-label">FPS</span>
+          <span id="render-fps" class="chip-value">0</span>
+        </div>
+        <div class="chip">
+          <span class="chip-label">inference/sec</span>
           <span id="fps" class="chip-value">0</span>
         </div>
       </div>
@@ -595,6 +599,7 @@
     const gestureConfidenceEl = document.getElementById("gesture-confidence");
     const handCountEl = document.getElementById("hand-count");
     const fpsEl = document.getElementById("fps");
+    const renderFpsEl = document.getElementById("render-fps");
 
     const cameraToggleBtn = document.getElementById("camera-toggle");
     const cameraSourceSelect = document.getElementById("camera-source");
@@ -619,6 +624,8 @@
     let lastVideoTime = -1;
     let frameCount = 0;
     let lastFpsTime = performance.now();
+    let renderFrameCount = 0;
+    let lastRenderFpsTime = performance.now();
     let requiresPermissionReload = false;
     let cameraPermissionStatus = null;
     let requiresExternalBrowser = false;
@@ -1002,6 +1009,7 @@
       gestureConfidenceEl.textContent = "--";
       handCountEl.textContent = "0";
       fpsEl.textContent = "0";
+      renderFpsEl.textContent = "0";
     }
 
     function spawnConfetti() {
@@ -1305,6 +1313,7 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       smoothedHands.clear();
       frameCount = 0;
+      renderFrameCount = 0;
       resetGestureOutput();
       if (statusMessage) {
         setStatus(statusMessage, tone);
@@ -1388,8 +1397,11 @@
         webcamRunning = true;
         lastVideoTime = -1;
         frameCount = 0;
+        renderFrameCount = 0;
         lastFpsTime = performance.now();
-        fpsEl.textContent = "0";
+        lastRenderFpsTime = performance.now();
+      fpsEl.textContent = "0";
+      renderFpsEl.textContent = "0";
         updateCameraToggleButton();
         placeholder.classList.add("hidden");
 
@@ -1463,6 +1475,13 @@
           frameCount = 0;
           lastFpsTime = nowMs;
         }
+      }
+
+      renderFrameCount += 1;
+      if (nowMs - lastRenderFpsTime >= 1000) {
+        renderFpsEl.textContent = String(renderFrameCount);
+        renderFrameCount = 0;
+        lastRenderFpsTime = nowMs;
       }
 
       animationFrameId = requestAnimationFrame(renderFrame);
