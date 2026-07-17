@@ -1,6 +1,6 @@
 ---
 name: api-docs-first
-description: Verify primary documentation and the repository's actual API or dependency version before writing or reviewing integration code. Use whenever work involves an external API, SDK, library, framework, browser or platform API, command-line tool, model/task API, webhook, or an unfamiliar or possibly changed interface.
+description: Load before writing or reviewing code that uses any external API, SDK, library, framework, browser or platform API, CLI, model/task API, webhook, or unfamiliar or possibly changed interface. Verify primary documentation and the exact repository version so methods, options, and result fields are not guessed.
 ---
 
 # API Docs First
