@@ -42,8 +42,7 @@ const cameraControls = $("camera-controls");
 const videoToggleControls = $("video-toggle-controls");
 const exportBtn = $("export-btn");
 
-let imageSegmenter = null;
-let videoSegmenter = null;
+let segmenter = null;
 let webcamRunning = false;
 let animationFrameId = 0;
 let lastVideoTime = -1;
@@ -271,7 +270,7 @@ function drawMask(mask, transform) {
 }
 
 function processFrame() {
-  if (!videoSegmenter || !webcamRunning) return;
+  if (!segmenter || !webcamRunning) return;
   if (video.readyState < 2) return;
 
   const now = performance.now();
@@ -296,7 +295,7 @@ function processFrame() {
   const t0 = performance.now();
   let result;
   try {
-    result = videoSegmenter.segmentForVideo(video, t0);
+    result = segmenter.segmentForVideo(video, t0);
   } catch (err) {
     isProcessing = false;
     showError("Inference Error", err.message);
@@ -348,7 +347,7 @@ function renderLoop() {
 }
 
 function segmentStillImage(file) {
-  if (!imageSegmenter) {
+  if (!segmenter) {
     showError("Model Not Ready", "The segmentation model has not finished loading.");
     return;
   }
@@ -360,7 +359,9 @@ function segmentStillImage(file) {
 
     let result;
     try {
-      result = imageSegmenter.segment(img);
+      segmenter.setOptions({ runningMode: "IMAGE" });
+      result = segmenter.segment(img);
+      segmenter.setOptions({ runningMode: "VIDEO" });
     } catch (err) {
       showError("Segmentation Error", err.message);
       return;
@@ -453,21 +454,14 @@ async function loadModel() {
     const vision = await FilesetResolver.forVisionTasks(
       "../../vendor/mediapipe/tasks-vision/wasm"
     );
-    const baseOpts = {
+    segmenter = await ImageSegmenter.createFromOptions(vision, {
       baseOptions: {
         modelAssetPath: "../../vendor/mediapipe/models/selfie_segmenter.tflite",
         delegate: "CPU"
       },
+      runningMode: "VIDEO",
       outputConfidenceMasks: true,
       outputCategoryMask: false
-    };
-    imageSegmenter = await ImageSegmenter.createFromOptions(vision, {
-      ...baseOpts,
-      runningMode: "IMAGE"
-    });
-    videoSegmenter = await ImageSegmenter.createFromOptions(vision, {
-      ...baseOpts,
-      runningMode: "VIDEO"
     });
     setStatus("Model ready", "ready");
     setStatusDetail("Upload an image or switch to webcam mode.");
@@ -599,7 +593,7 @@ exportBtn.addEventListener("click", () => {
     setStatus("Benchmark running...", "");
   }
 });
-  if (!videoSegmenter) return;
+  if (!segmenter) return;
   if (webcamRunning) {
     stopCamera();
   } else {
