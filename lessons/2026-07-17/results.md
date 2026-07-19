@@ -49,13 +49,13 @@ Yes, because without the guard, segmentForVideo runs on every requestAnimationFr
 
 | Test | What I changed | What happened to the mask | Latency or stability change | Pass, partial, or fail |
 | --- | --- | --- | --- | --- |
-| Low light | | | | |
-| Fast movement | | | | |
-| More than one person | | | | |
-| Person partly outside the frame | | | | |
-| Busy background | | | | |
-| Camera permission denied | | | | |
-| Camera stopped and restarted | | | | |
+| Low light | Turned off room lights, only monitor glow | Coverage dropped 22.6% → 17.1%, mask edges noisier | FPS dropped 11.5 → 8.8, latency stable | Partial |
+| Fast movement | Rapid head and hand movement side to side | Coverage dropped 22.6% → 18.7%, mask flickered at edges | FPS dropped 11.5 → 8.6, latency stable | Partial |
+| More than one person | Skipped — only one person available | — | — | N/A |
+| Person partly outside the frame | Moved so only half of head/shoulders visible | Coverage dropped 22.6% → 1.1%, mask only captured visible portion | FPS 11.5 → 10.6, latency stable | Pass |
+| Busy background | Skipped — desktop background is stable and uncluttered | — | — | N/A |
+| Camera permission denied | Blocked camera in browser settings, clicked Enable Camera | Error overlay shown — "Permission Denied", status updated to denied state | No benchmark possible — no camera access | Pass |
+| Camera stopped and restarted | Stopped camera, restarted, ran benchmark | Mask recovered, coverage slightly lower (22.6% → 17.3%) | FPS 11.5 → 10.6, latency stable | Pass |
 
 ## Explanation
 
@@ -64,9 +64,9 @@ that file is.
 
 ## Final evidence
 
-- Module path:
-- Commit hash:
-- Journal completed:
+- Module path: `mediapipe-lab/sims/person-segmentation/`
+- Commit hash: `48c2039`
+- Journal completed: 2026-07-17
 - Result I would demonstrate:
 - Limitation I would state during the demonstration:
 
