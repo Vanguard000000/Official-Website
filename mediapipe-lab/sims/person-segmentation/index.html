@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Person Segmentation</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main id="layout" role="main" aria-label="Person segmentation demo">
+    <h1 class="sr-only">Person Segmentation — CPU</h1>
+
+    <div id="container">
+      <div id="placeholder">
+        <div id="status-card">
+          <p id="status" role="status" aria-live="polite">Loading segmentation model...</p>
+          <p id="status-detail"></p>
+        </div>
+      </div>
+      <video id="webcam" autoplay playsinline muted></video>
+      <canvas id="overlay"></canvas>
+
+      <div id="metrics" aria-label="Performance metrics">
+        <span class="metric"><span class="metric-label">FPS</span> <span id="fps">0</span></span>
+        <span class="metric"><span class="metric-label">Latency</span> <span id="latency">0</span>ms</span>
+        <span class="metric"><span class="metric-label">Skipped</span> <span id="skipped">0</span></span>
+        <span class="metric"><span class="metric-label">Errors</span> <span id="errors">0</span></span>
+      </div>
+
+      <div id="error-overlay" role="alert" aria-hidden="true">
+        <div id="error-card">
+          <p id="error-title"></p>
+          <p id="error-body"></p>
+          <button id="error-dismiss" type="button">Dismiss</button>
+        </div>
+      </div>
+    </div>
+
+    <aside id="controls-panel" aria-label="Segmentation controls">
+      <div>
+        <p class="panel-title">Person Segmentation</p>
+        <p class="panel-subtitle">selfie_segmenter / CPU</p>
+      </div>
+
+      <section class="control-group">
+        <p class="group-label">Mode</p>
+        <div class="mode-toggle">
+          <button id="mode-image" class="mode-btn active" type="button">Still Image</button>
+          <button id="mode-camera" class="mode-btn" type="button">Webcam</button>
+        </div>
+      </section>
+
+      <section id="image-controls" class="control-group">
+        <label class="file-upload" for="file-input">
+          <span>Upload Still Image</span>
+          <input id="file-input" type="file" accept="image/*" />
+        </label>
+      </section>
+
+      <section id="camera-controls" class="control-group hidden">
+        <button id="camera-btn" type="button">Enable Camera</button>
+      </section>
+
+      <section class="control-group">
+        <div class="slider-row">
+          <label class="slider-label" for="threshold-slider">
+            <span>Mask Threshold</span>
+            <span id="threshold-value">0.50</span>
+          </label>
+          <input id="threshold-slider" type="range" min="0" max="100" step="1" value="50" />
+        </div>
+      </section>
+
+      <section class="control-group">
+        <p class="group-label">Mask Color</p>
+        <div class="color-picker-row">
+          <input id="color-picker" type="color" value="#00ff88" />
+          <input id="color-hex" type="text" value="#00ff88" maxlength="7" />
+        </div>
+        <div id="color-grid" class="color-grid">
+          <button class="color-swatch" style="background:#00ff88" data-hex="#00ff88" aria-label="Green"></button>
+          <button class="color-swatch" style="background:#ff4444" data-hex="#ff4444" aria-label="Red"></button>
+          <button class="color-swatch" style="background:#4488ff" data-hex="#4488ff" aria-label="Blue"></button>
+          <button class="color-swatch" style="background:#ff8800" data-hex="#ff8800" aria-label="Orange"></button>
+          <button class="color-swatch" style="background:#ff44ff" data-hex="#ff44ff" aria-label="Pink"></button>
+          <button class="color-swatch" style="background:#ffff44" data-hex="#ffff44" aria-label="Yellow"></button>
+          <button class="color-swatch" style="background:#44ffff" data-hex="#44ffff" aria-label="Cyan"></button>
+          <button class="color-swatch" style="background:#ffffff" data-hex="#ffffff" aria-label="White"></button>
+        </div>
+      </section>
+
+      <section class="control-group">
+        <div class="slider-row">
+          <label class="slider-label" for="edge-slider">
+            <span>Edge Thickness</span>
+            <span id="edge-value">2px</span>
+          </label>
+          <input id="edge-slider" type="range" min="0" max="20" step="1" value="2" />
+        </div>
+      </section>
+
+      <section id="video-toggle-controls" class="control-group hidden">
+        <label class="toggle-field" for="show-video">
+          <input id="show-video" type="checkbox" checked />
+          <span>Show Video Feed</span>
+        </label>
+        <label class="toggle-field" for="mirror-video">
+          <input id="mirror-video" type="checkbox" checked />
+          <span>Mirror Video</span>
+        </label>
+      </section>
+    </aside>
+  </main>
+
+  <script type="module" src="segmentation.js"></script>
+</body>
+</html>
