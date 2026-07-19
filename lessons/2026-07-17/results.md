@@ -67,6 +67,6 @@ that file is.
 - Module path: `mediapipe-lab/sims/person-segmentation/`
 - Commit hash: `48c2039`
 - Journal completed: 2026-07-17
-- Result I would demonstrate:
-- Limitation I would state during the demonstration:
+- Result I would demonstrate: The segmentation feature in a fair, uncluttered environment with good lighting and one person at a medium distance for the best results.
+- Limitation I would state during the demonstration: The feature has a consistent FPS of 11-12, and this drops significantly in low-light. The worst frames are significantly slower than the 95% best ones, so finding the root cause and speeding up processing would be another limitation.
 
