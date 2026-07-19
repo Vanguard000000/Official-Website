@@ -29,11 +29,11 @@ Keep every run, including bad ones.
 
 | Run | Inferences | Median latency (ms) | p95 latency (ms) | Effective inference FPS | Foreground coverage (%) | Notes |
 | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| 1 | | | | | | |
-| 2 | | | | | | |
-| 3 | | | | | | |
-| 4 | | | | | | |
-| 5 | | | | | | |
+| 1 | 167 | 48.8 | 55.3 | 11.4 | -- | 14.6s |
+| 2 | 169 | 50.3 | 58.6 | 11.0 | -- | 15.3s |
+| 3 | 175 | 48.1 | 53.5 | 11.6 | -- | 15.1s |
+| 4 | 168 | 46.6 | 50.6 | 11.9 | -- | 14.1s |
+| 5 | 28 | 46.9 | 53.1 | 11.7 | -- | 2.4s |
 
 ## Benchmark summary
 

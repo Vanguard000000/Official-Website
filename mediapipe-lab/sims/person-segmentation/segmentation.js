@@ -29,8 +29,12 @@ const mirrorVideoInput = $("mirror-video");
 const metricsEl = $("metrics");
 const fpsEl = $("fps");
 const latencyEl = $("latency");
+const p95latencyEl = $("p95latency");
 const skippedEl = $("skipped");
 const errorsEl = $("errors");
+const inferencesEl = $("inferences");
+const benchmarkTimer = $("benchmark-timer");
+const benchElapsedEl = $("bench-elapsed");
 const errorOverlay = $("error-overlay");
 const errorTitle = $("error-title");
 const errorBody = $("error-body");
@@ -81,8 +85,11 @@ modeCameraBtn.addEventListener("click", () => setMode("camera"));
 let totalFrames = 0;
 let skippedFrames = 0;
 let errorCount = 0;
+let inferenceCount = 0;
 let lastFpsTick = performance.now();
 let frameLatencyEstimate = 0;
+let rollingLatencies = [];
+const ROLLING_WINDOW = 100;
 let benchmarkRunning = false;
 let benchmarkLatencies = [];
 let benchmarkInferences = 0;
@@ -304,10 +311,14 @@ function processFrame() {
 
   frameLatencyEstimate = performance.now() - t0;
   totalFrames++;
+  inferenceCount++;
+  rollingLatencies.push(frameLatencyEstimate);
+  if (rollingLatencies.length > ROLLING_WINDOW) rollingLatencies.shift();
   if (benchmarkRunning) {
     benchmarkLatencies.push(frameLatencyEstimate);
     benchmarkInferences++;
   }
+  inferencesEl.textContent = inferenceCount;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawVideoFrame(transform);
@@ -328,9 +339,20 @@ function updateMetrics() {
   const now = performance.now();
   const elapsed = now - lastFpsTick;
   if (elapsed >= 500) {
-    const fps = totalFrames / (elapsed / 1000);
-    fpsEl.textContent = Math.round(fps).toString();
-    latencyEl.textContent = Math.round(frameLatencyEstimate).toString();
+    const infFps = totalFrames / (elapsed / 1000);
+    const infCount = inferenceCount;
+
+    let median = 0;
+    let p95 = 0;
+    if (rollingLatencies.length > 0) {
+      const sorted = rollingLatencies.slice().sort((a, b) => a - b);
+      median = sorted[Math.floor(sorted.length / 2)];
+      p95 = sorted[Math.floor(sorted.length * 0.95)];
+    }
+
+    fpsEl.textContent = Math.round(infFps).toString();
+    latencyEl.textContent = Math.round(median).toString();
+    p95latencyEl.textContent = Math.round(p95).toString();
     totalFrames = 0;
     lastFpsTick = now;
   }
@@ -340,6 +362,13 @@ function renderLoop() {
   try {
     processFrame();
     updateMetrics();
+    if (benchmarkRunning) {
+      const elapsed = ((performance.now() - benchmarkStartTime) / 1000).toFixed(1);
+      benchElapsedEl.textContent = elapsed;
+      benchmarkTimer.style.display = "";
+    } else {
+      benchmarkTimer.style.display = "none";
+    }
   } catch (err) {
     showError("Loop Error", err.message);
   }
@@ -487,11 +516,15 @@ async function startCamera() {
     totalFrames = 0;
     skippedFrames = 0;
     errorCount = 0;
+    inferenceCount = 0;
+    rollingLatencies = [];
     lastFpsTick = performance.now();
     fpsEl.textContent = "0";
     latencyEl.textContent = "0";
+    p95latencyEl.textContent = "0";
     skippedEl.textContent = "0";
     errorsEl.textContent = "0";
+    inferencesEl.textContent = "0";
     metricsEl.style.display = "flex";
     exportBtn.disabled = false;
     setStatus("Camera active", "ready");
@@ -537,6 +570,8 @@ function stopCamera() {
   setStatus("Camera stopped", "");
   setStatusDetail("Upload an image or enable the camera.");
   cameraBtn.textContent = "Enable Camera";
+  exportBtn.disabled = true;
+  benchmarkRunning = false;
 }
 
 exportBtn.addEventListener("click", () => {
@@ -593,6 +628,8 @@ exportBtn.addEventListener("click", () => {
     setStatus("Benchmark running...", "");
   }
 });
+
+cameraBtn.addEventListener("click", () => {
   if (!segmenter) return;
   if (webcamRunning) {
     stopCamera();

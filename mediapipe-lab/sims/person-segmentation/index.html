@@ -21,10 +21,15 @@
       <canvas id="overlay"></canvas>
 
       <div id="metrics" aria-label="Performance metrics">
-        <span class="metric"><span class="metric-label">FPS</span> <span id="fps">0</span></span>
-        <span class="metric"><span class="metric-label">Latency</span> <span id="latency">0</span>ms</span>
+        <span class="metric"><span class="metric-label">Inf FPS</span> <span id="fps">0</span></span>
+        <span class="metric"><span class="metric-label">Median</span> <span id="latency">0</span>ms</span>
+        <span class="metric"><span class="metric-label">p95</span> <span id="p95latency">0</span>ms</span>
+        <span class="metric"><span class="metric-label">Frames</span> <span id="inferences">0</span></span>
         <span class="metric"><span class="metric-label">Skipped</span> <span id="skipped">0</span></span>
         <span class="metric"><span class="metric-label">Errors</span> <span id="errors">0</span></span>
+        <span id="benchmark-timer" class="metric" style="display:none;color:#ca8;">
+          <span class="metric-label">Bench</span> <span id="bench-elapsed">0.0</span>s
+        </span>
       </div>
 
       <div id="error-overlay" role="alert" aria-hidden="true">
