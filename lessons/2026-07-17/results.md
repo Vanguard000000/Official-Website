@@ -69,4 +69,10 @@ that file is.
 - Journal completed: 2026-07-17
 - Result I would demonstrate: The segmentation feature in a fair, uncluttered environment with good lighting and one person at a medium distance for the best results.
 - Limitation I would state during the demonstration: The feature has a consistent FPS of 11-12, and this drops significantly in low-light. The worst frames are significantly slower than the 95% best ones, so finding the root cause and speeding up processing would be another limitation.
-
+Checkpoint:
+Runtime and model ready on CPU	Model loaded | status shows "Model ready"
+One still image segmented | Model segmented the body properly and highlighted the person in img
+Raw mask visible | The un-colored confidence mask was viewable
+Visual effect driven by mask | Color picker + edge blur + threshold slider worked
+Webcam loop stable | Camera ran 15+ seconds without crashing
+Camera and resources stop cleanly | Clicking "Disable Camera" released the hardware
