@@ -16,13 +16,13 @@ measurements. If something does not work, record that result and the error.
 
 ## Fixed benchmark setup
 
-- Browser and version:
-- Machine and operating system:
-- Camera and resolution:
-- Lighting, distance, and background:
-- Threshold:
-- Visual effect enabled:
-- Warm-up completed:
+- Browser and version: Opera 133
+- Machine and operating system: Optiplex 7040 Windows 10 Pro 22H2 (64-bit)
+- Camera and resolution: K20 USB CAMERA, 1920x1080 ideal 60hz
+- Lighting, distance, and background: close distance (11-13 in), mostly clear background, shady lighting (not dark not bright)
+- Threshold: 0.50
+- Visual effect enabled: color overlay + edge blur
+- Warm-up completed: 15 seconds
 
 Warm up for 10 seconds. Then run the same scene for 10 seconds five times.
 Keep every run, including bad ones.

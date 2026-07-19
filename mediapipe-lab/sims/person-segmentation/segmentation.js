@@ -40,6 +40,7 @@ const modeCameraBtn = $("mode-camera");
 const imageControls = $("image-controls");
 const cameraControls = $("camera-controls");
 const videoToggleControls = $("video-toggle-controls");
+const exportBtn = $("export-btn");
 
 let imageSegmenter = null;
 let videoSegmenter = null;
@@ -63,7 +64,9 @@ function setMode(mode) {
     imageControls.classList.remove("hidden");
     cameraControls.classList.add("hidden");
     videoToggleControls.classList.add("hidden");
-    metricsEl.style.display = "none";
+  metricsEl.style.display = "none";
+  exportBtn.disabled = true;
+  benchmarkRunning = false;
   } else {
     modeCameraBtn.classList.add("active");
     modeImageBtn.classList.remove("active");
@@ -81,6 +84,10 @@ let skippedFrames = 0;
 let errorCount = 0;
 let lastFpsTick = performance.now();
 let frameLatencyEstimate = 0;
+let benchmarkRunning = false;
+let benchmarkLatencies = [];
+let benchmarkInferences = 0;
+let benchmarkStartTime = 0;
 
 function setStatus(msg, state) {
   statusEl.textContent = msg;
@@ -298,6 +305,10 @@ function processFrame() {
 
   frameLatencyEstimate = performance.now() - t0;
   totalFrames++;
+  if (benchmarkRunning) {
+    benchmarkLatencies.push(frameLatencyEstimate);
+    benchmarkInferences++;
+  }
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawVideoFrame(transform);
@@ -488,6 +499,7 @@ async function startCamera() {
     skippedEl.textContent = "0";
     errorsEl.textContent = "0";
     metricsEl.style.display = "flex";
+    exportBtn.disabled = false;
     setStatus("Camera active", "ready");
     cameraBtn.textContent = "Disable Camera";
     animationFrameId = requestAnimationFrame(renderLoop);
@@ -533,7 +545,60 @@ function stopCamera() {
   cameraBtn.textContent = "Enable Camera";
 }
 
-cameraBtn.addEventListener("click", () => {
+exportBtn.addEventListener("click", () => {
+  if (benchmarkRunning) {
+    benchmarkRunning = false;
+    const elapsed = (performance.now() - benchmarkStartTime) / 1000;
+    const sorted = benchmarkLatencies.slice().sort((a, b) => a - b);
+    const median = sorted.length > 0
+      ? sorted[Math.floor(sorted.length / 2)]
+      : 0;
+    const p95 = sorted.length > 0
+      ? sorted[Math.floor(sorted.length * 0.95)]
+      : 0;
+    const fps = elapsed > 0 ? benchmarkInferences / elapsed : 0;
+
+    const row =
+      "| 1 | " +
+      benchmarkInferences + " | " +
+      median.toFixed(1) + " | " +
+      p95.toFixed(1) + " | " +
+      fps.toFixed(1) + " | " +
+      "-- | " + elapsed.toFixed(1) + "s |";
+
+    const json = JSON.stringify({
+      inferences: benchmarkInferences,
+      medianMs: median,
+      p95Ms: p95,
+      fps: fps,
+      elapsedSec: elapsed,
+      samples: benchmarkLatencies.length
+    }, null, 2);
+
+    const text = row + "\n\n" + json;
+    navigator.clipboard.writeText(text).then(() => {
+      exportBtn.textContent = "Copied " + benchmarkInferences + " frames";
+      exportBtn.disabled = false;
+      setTimeout(() => {
+        exportBtn.textContent = "Start Benchmark";
+        exportBtn.disabled = false;
+      }, 2500);
+    }).catch(() => {
+      exportBtn.textContent = "Copy failed";
+    });
+
+    benchmarkLatencies = [];
+    benchmarkInferences = 0;
+    setStatus("Benchmark ended | " + fps.toFixed(1) + " FPS | " + median.toFixed(0) + "ms median", "ready");
+  } else {
+    benchmarkRunning = true;
+    benchmarkLatencies = [];
+    benchmarkInferences = 0;
+    benchmarkStartTime = performance.now();
+    exportBtn.textContent = "Stop & Export";
+    setStatus("Benchmark running...", "");
+  }
+});
   if (!videoSegmenter) return;
   if (webcamRunning) {
     stopCamera();
