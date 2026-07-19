@@ -26,6 +26,7 @@ const edgeSlider = $("edge-slider");
 const edgeValue = $("edge-value");
 const showVideoInput = $("show-video");
 const mirrorVideoInput = $("mirror-video");
+const naiveModeInput = $("naive-mode");
 const metricsEl = $("metrics");
 const fpsEl = $("fps");
 const latencyEl = $("latency");
@@ -53,6 +54,7 @@ let lastVideoTime = -1;
 let isProcessing = false;
 let showVideoFeed = true;
 let mirrorVideoFeed = true;
+let naiveMode = false;
 let maskThreshold = 0.5;
 let maskColor = "#00ff88";
 let edgeThickness = 2;
@@ -94,6 +96,7 @@ let benchmarkRunning = false;
 let benchmarkLatencies = [];
 let benchmarkInferences = 0;
 let benchmarkStartTime = 0;
+let benchmarkCoverages = [];
 
 function setStatus(msg, state) {
   statusEl.textContent = msg;
@@ -171,6 +174,10 @@ showVideoInput.addEventListener("change", () => {
 
 mirrorVideoInput.addEventListener("change", () => {
   mirrorVideoFeed = mirrorVideoInput.checked;
+});
+
+naiveModeInput.addEventListener("change", () => {
+  naiveMode = naiveModeInput.checked;
 });
 
 function computeCoverTransform() {
@@ -283,7 +290,7 @@ function processFrame() {
   const now = performance.now();
   if (video.currentTime === lastVideoTime) return;
 
-  if (isProcessing) {
+  if (!naiveMode && isProcessing) {
     skippedFrames++;
     skippedEl.textContent = skippedFrames;
     return;
@@ -326,6 +333,13 @@ function processFrame() {
   if (result?.confidenceMasks && result.confidenceMasks.length > 0) {
     try {
       drawMask(result.confidenceMasks[0], transform);
+      if (benchmarkRunning && result.confidenceMasks[0]) {
+        const m = result.confidenceMasks[0];
+        const d = m.getAsFloat32Array();
+        let above = 0;
+        for (let i = 0; i < d.length; i++) { if (d[i] > maskThreshold) above++; }
+        benchmarkCoverages.push((above / d.length) * 100);
+      }
     } catch (err) {
       showError("Mask Render Error", err.message);
     }
@@ -586,6 +600,9 @@ exportBtn.addEventListener("click", () => {
       ? sorted[Math.floor(sorted.length * 0.95)]
       : 0;
     const fps = elapsed > 0 ? benchmarkInferences / elapsed : 0;
+    const avgCoverage = benchmarkCoverages.length > 0
+      ? benchmarkCoverages.reduce((s, v) => s + v, 0) / benchmarkCoverages.length
+      : 0;
 
     const row =
       "| 1 | " +
@@ -593,13 +610,14 @@ exportBtn.addEventListener("click", () => {
       median.toFixed(1) + " | " +
       p95.toFixed(1) + " | " +
       fps.toFixed(1) + " | " +
-      "-- | " + elapsed.toFixed(1) + "s |";
+      avgCoverage.toFixed(1) + "% | " + elapsed.toFixed(1) + "s |";
 
     const json = JSON.stringify({
       inferences: benchmarkInferences,
       medianMs: median,
       p95Ms: p95,
       fps: fps,
+      foregroundCoverage: avgCoverage,
       elapsedSec: elapsed,
       samples: benchmarkLatencies.length
     }, null, 2);
@@ -618,11 +636,13 @@ exportBtn.addEventListener("click", () => {
 
     benchmarkLatencies = [];
     benchmarkInferences = 0;
+    benchmarkCoverages = [];
     setStatus("Benchmark ended | " + fps.toFixed(1) + " FPS | " + median.toFixed(0) + "ms median", "ready");
   } else {
     benchmarkRunning = true;
     benchmarkLatencies = [];
     benchmarkInferences = 0;
+    benchmarkCoverages = [];
     benchmarkStartTime = performance.now();
     exportBtn.textContent = "Stop & Export";
     setStatus("Benchmark running...", "");

@@ -29,20 +29,21 @@ Keep every run, including bad ones.
 
 | Run | Inferences | Median latency (ms) | p95 latency (ms) | Effective inference FPS | Foreground coverage (%) | Notes |
 | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| 1 | 167 | 48.8 | 55.3 | 11.4 | -- | 14.6s |
-| 2 | 169 | 50.3 | 58.6 | 11.0 | -- | 15.3s |
-| 3 | 175 | 48.1 | 53.5 | 11.6 | -- | 15.1s |
-| 4 | 168 | 46.6 | 50.6 | 11.9 | -- | 14.1s |
-| 5 | 28 | 46.9 | 53.1 | 11.7 | -- | 2.4s |
+| 1 | 167 | 48.8 | 55.3 | 11.4 | 22.6 | 14.6s |
+| 2 | 169 | 50.3 | 58.6 | 11.0 | 22.6 | 15.3s |
+| 3 | 175 | 48.1 | 53.5 | 11.6 | 22.6 | 15.1s |
+| 4 | 168 | 46.6 | 50.6 | 11.9 | 22.6 | 14.1s |
+| 5 | 195 | 46.5 | 50.8 | 11.6 | 22.6 | 16.9s |
 
 ## Benchmark summary
 
-- Median latency across all recorded samples:
-- p95 latency across all recorded samples:
-- Effective inference FPS across all runs:
-- Foreground-coverage range:
-- What happened during the naive every-frame loop, before my mechanism:
+- Median latency across all recorded samples: 48.06ms
+- p95 latency across all recorded samples:  53.8 ms
+- Effective inference FPS across all runs:  11.5
+- Foreground-coverage range: 22.6%
+- What happened during the naive every-frame loop, before my mechanism: With the guard disabled, 395 inferences completed in 37.6s at 10.5 FPS. Foreground coverage = 0% — overlapping calls corrupted the mask. Without the isProcessing gate, multiple segmentForVideo calls ran concurrently, causing mask data loss. Skipped frames = 0 (no guard to skip anything).
 - Were any inference calls overlapping? How did I verify this?
+Yes, because without the guard, segmentForVideo runs on every requestAnimationFrame without waiting, and skipped frames = 0 confirms nothing was blocked. The 0% coverage proves the mask data was corrupted by concurrent access.
 
 ## Failure tests
 
