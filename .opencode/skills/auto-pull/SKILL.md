@@ -1,30 +1,32 @@
 ---
 name: auto-pull
-description: Pull latest changes from the remote repo at the start of every session in this project (Official-Website-portfolio). Use automatically on first interaction in this repo before any other work begins. Also triggered by "pull latest", "update the repo", "sync changes", or when the student hasn't worked in this repo for a while.
+description: Synchronize this repository with origin/main. Use when asked to pull, update, or sync the checkout.
 ---
 
-# Auto Pull
-
-At the start of every session in this repo, pull the latest changes before any other work.
+# Sync from origin
 
 ## Workflow
 
-1. **Check you're in this project.** Confirm the working directory is the Official-Website-portfolio directory.
-2. **Stash or preserve local changes.** Run `git status` to see what's uncommitted:
-   - If the working tree is clean, proceed.
-   - If there are uncommitted changes, ask the student whether to stash them, commit them (use safe-commit), or skip the pull. Never pull with uncommitted changes without the student's decision.
-3. **Pull.** Run `git pull origin main`.
-4. **Report what came in.** Show the new commits pulled. If there's a merge conflict, stop and explain what happened — do not resolve conflicts without the student.
-5. **Note updated files.** Mention any new or changed lesson files, journal entries, or skills so the student knows what's different.
+1. Confirm the repository root, current branch, upstream, and working-tree
+   status.
+2. Run `git fetch origin`.
+3. Compare the local branch with `origin/main`.
+4. If the worktree is clean and the branch can fast-forward, run
+   `git pull --ff-only origin main`.
+5. If local changes or divergent commits would be affected, stop and report the
+   exact files and divergence before choosing a merge, rebase, stash, or commit.
+6. Report the commits and files introduced by the update.
 
-## Hard Limits
+## Boundaries
 
-- Never discard uncommitted work without the student's explicit permission.
-- Never resolve merge conflicts without the student present.
-- Do not amend, force-push, or rebase during this workflow.
-- If `git pull` fails for any reason other than an uncommitted change, stop and explain the error.
+- Preserve uncommitted work.
+- Do not resolve merge conflicts, amend, rebase, or force-push as part of a
+  routine sync.
+- A failed fast-forward or unresolved worktree overlap requires a separate,
+  explicit integration decision.
 
-## Done When
+## Done when
 
-- `git status` shows the local branch is up to date with `origin/main`.
-- The student knows what was pulled and whether any of their work was affected.
+- Local and `origin/main` divergence is reported.
+- A successful sync ends with the expected upstream revision.
+- Any unresolved integration condition is stated with the affected files.

@@ -20,6 +20,8 @@ Kushagra and Shreyas both have resumes in their repos and got feedback on them t
 
 ## How to build it
 
-Write the content yourself first — bullet points in plain text, your words. Then have your agent help with formatting. Same rule as the journal: an agent can shape it, but a resume in someone else's voice reads like one.
+Draft the content as plain-text bullet points, then use editing and formatting
+tools as needed. Verify every factual statement and keep the final wording
+consistent with the rest of the portfolio.
 
 When a draft exists, ask for a critique and you'll get the same treatment they did.

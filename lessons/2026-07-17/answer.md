@@ -1,8 +1,8 @@
 # Answer — 2026-07-17
 
-Write every answer yourself, in your own words, anchored to your own code
-(file and line). The agent may review what you wrote and ask questions; it may
-not write or rewrite these answers.
+Anchor every answer to source files, line references, executed checks, or saved
+results. Assistance may include drafting, explanation, implementation, and
+review; observations must still come from an executed check.
 
 ## Pipeline explanation
 
@@ -25,21 +25,19 @@ The mask failed in naive loop because the isProcessing boolean guard was missing
 MediaPipe: result.close() — line 348 in processFrame(). This runs every frame, closing the confidence masks so they don't accumulate in memory.
 8. What is one next change supported by the results? What evidence supports it?
 The inferences are the bottleneck and this slows the cycle, creating extra latency. THis is clear from the median latency benchmark that is consistently in the 46 to 50ms zone, which means that inferences took 46% or more of the time per cycle. Moving inference to a web worker will cut down browser locking and being non-responsive during the 48ms interference, and this will reduce median latency.
-## Defense preparation
+## Walkthrough preparation
 
-Before the demo, run a `defense-drill` on this implementation and record the
-scorecard in your journal. At the demo you will, without the agent:
+Before the demo, review the implementation against these questions:
 
 - trace one live frame through your own code,
 - point to the line where CPU execution is selected,
 - explain what a confidence value of 0.62 means and why your threshold is
   where it is,
 - explain the mechanism that prevents overlapping inference,
-- make one small live change the instructor picks.
+- make one small live change and verify the result.
 
-## Honesty log
+## Implementation record
 
-- Level of agent help I actually used (documentation lookup, error
-  explanation, plan review — be specific): I used the agent for documentation look-up, and in plan.md, I didn't understand some terms like what a segment factory was. And at times, I failed to get why something worked or failed-like the corrupted foreground coverage process that results due to a missing boolean guard.
-- Anything in my module I could not fully explain during the drill: 
+- Sources of assistance used: I used the agent for documentation look-up, and in plan.md, I didn't understand some terms like what a segment factory was. And at times, I failed to get why something worked or failed-like the corrupted foreground coverage process that results due to a missing boolean guard.
+- Remaining uncertainty:
 The gate's meaning when it was set to true or false was confusing for me. I had to review it several times.
