@@ -15,9 +15,10 @@ evidence record. Commit it as you go.
 
 ## Why this matters
 
-Every lesson after this one runs Python against OpenCV. Those lessons compare
-results across machines. That comparison is meaningless unless the Python and
-library versions for each result are recorded.
+Every lesson after this one runs Python against OpenCV. Those lessons will ask
+you to measure things and compare your numbers to each other's. That comparison
+is meaningless unless we know which Python and which library versions produced
+each number.
 
 The failure this prevents is specific and common: code runs on your machine,
 fails on someone else's, and nobody can tell whether the cause is the code, the
@@ -101,10 +102,10 @@ Separate environments let both projects keep the versions they need.
 - **Approving an install without reading it.** Check the target environment,
   package sources, upgrades, removals, and requested packages.
 
-**Stop condition:** the repository already has an unresolved dependency setup,
-a proposed transaction removes packages outside the request, a package source
-contains a credential, or a command requests administrator access beyond the
-Miniforge installer.
+**Stop and ask for help if:** the repository already has a dependency setup you
+do not understand, a proposed transaction removes packages you did not ask to
+remove, a package source contains a credential, or any command asks for an
+administrator password beyond the Miniforge installer itself.
 
 ## 0. Install Miniforge
 
@@ -179,11 +180,11 @@ conda config --show channels
 
 You should see a version number and `conda-forge` in the channel list. Record:
 
-- Conda version:
-- Channels listed:
-- Terminal you are using (macOS Terminal, Miniforge Prompt, PowerShell):
+- Conda version:  conda 26.3.2
+- Channels listed: conda-forge
+- Terminal you are using (macOS Terminal, Miniforge Prompt, PowerShell): Mini-forge prompt
 
-Continue after `conda --version` prints a version.
+Do not continue until `conda --version` prints a version.
 
 ## 1. Plan
 
@@ -193,42 +194,43 @@ happens.
 
 **Starting state**
 
-- Repository root:
-- Git branch and worktree state:
-- Active Conda environment (or none):
-- Current `python --version` and path:
-- Existing dependency files in the repository:
+- Repository root: /Official-Website-portfolio
+- Git branch and worktree state: main, good (except for machine-profile.json)
+- Active Conda environment (or none): none
+- Current `python --version` and path: Microsoft Store addon
+- Existing dependency files in the repository: none
 
 **Intended change**
 
-- Environment name I will create:
-- Packages I am requesting, and why each one is needed:
-- Files I expect to add or modify in the repository:
+- Environment name I will create: (ac-cv)
+- Packages I am requesting, and why each one is needed: Python (version of python), pip (package installer), NumPy (math), OpenCV (computer-vision (used for analyzing real images and data)), and jupterLab (notebook creation + access). Pillow (saving-loading images) and MatplotLib(picture modification).
+  Matplotlib, and JupyterLab.
+- Files I expect to add or modify in the repository:  environment.yml, machine-profile.json, this README, and a notebook file
 
 **Allowed scope**
 
-- Files this lesson may change:
-- Anything in this repository that must not change:
+- Files this lesson may change:  environment.yml, machine-profile.json, this README, and a notebook file
+- Anything in this repository that must not change: existing website files (html, css, js), the .git folder-these are separate from everything else
 
 **Expected result**
 
-- What I predict `python --version` will print after activation:
-- What I predict `sys.executable` will be after activation:
-- What I predict the *before* machine profile will say about NumPy and OpenCV:
+- What I predict `python --version` will print after activation: Python 3.12 x
+- What I predict `sys.executable` will be after activation:  .../miniforge3/envs/ac-cv/python.exe
+- What I predict the *before* machine profile will say about NumPy and OpenCV: numpy was missing, opencv was missing
 
 **Verification**
 
-- The exact command I will run to prove the environment is active:
-- The observation that would prove I am in the wrong environment:
+- The exact command I will run to prove the environment is active: echo $env:CONDA_DEFAULT_ENV or conda info --envs
+- The observation that would prove I am in the wrong environment: python still points to the system one (Microsoft Store stub)
 
 **Recovery**
 
-- If the environment is broken or wrong, the command that removes it:
-- What I would lose by removing it, and what I would not lose:
+- If the environment is broken or wrong, the command that removes it: conda env remove --name ac-cv
+- What I would lose by removing it, and what I would not lose: lose installed packages but keep work (repo, root)
 
 **Stop condition**
 
-- The result that would make me stop and ask for help:
+- The result that would make me stop and ask for help:  if import cv2 fails or any package path points outside ac-cv
 
 Now gather the starting state:
 
@@ -272,8 +274,8 @@ find . -maxdepth 2 -type f \( -name 'environment*.yml' -o -name 'environment*.ya
 Get-ChildItem -Depth 1 -File -Include environment*.yml,environment*.yaml,pyproject.toml,requirements*.txt,uv.lock -Recurse
 ```
 
-Update the starting-state fields with what you found. Resolve the purpose and
-ownership of any existing dependency file before adding another one.
+Update the starting-state fields with what you found. Do not continue until you
+understand any dependency file already in the repository.
 
 ## 2. Capture the "before" machine profile
 
@@ -290,20 +292,22 @@ python tools/machine_inventory.py
 
 It writes `machine-profile.json` and prints a summary line. Record:
 
-- Summary line it printed:
-- `python.executable` from the file:
-- `python.virtual_environment` from the file:
-- `libraries` status for numpy:
-- `libraries` status for opencv:
+- Summary line it printed:  numpy, opencv, matplotlib, pillow, jupyterlab, ipykernel
+Commit machine-profile.json to your class repository.
+- `python.executable` from the file: "~\\miniforge3\\python.exe"
+- `python.virtual_environment` from the file: false
+- `libraries` status for numpy: "missing"
+- `libraries` status for opencv: "missing"
 
-Compare this against the *expected result* from Section 1. If the profile
-disagrees with the prediction, record the mismatch and update the model before
-continuing.
+Compare this against the *expected result* you wrote in Section 1. If the
+profile disagrees with your prediction, write down which prediction was wrong
+before continuing. Being wrong here is expected and is worth more than being
+right.
 
 ## 3. Create the environment
 
-Use the shared environment name `ac-cv` so commands and error messages are
-comparable across the three repositories. The name describes
+Everyone in this cohort uses the same environment name, `ac-cv`, so commands and
+error messages are comparable across the three repositories. The name describes
 the work the environment serves — the Applied Computing computer-vision block —
 not the folder it sits next to.
 
@@ -336,15 +340,15 @@ Before answering `y`, confirm:
 Conda will install far more packages than the six you named. Write down two of
 them that are there only because a requested package needs them:
 
-1.
-2.
+1.jupyter-builder
+2.py-opencv 
 
 ## 4. Activate it and check the paths
 
 Predict before you look. Write these two now:
 
-- I predict `sys.executable` will be:
-- I predict `cv2.__file__` will be:
+- I predict `sys.executable` will be: ../miniforge3/envs/ac-cv/python.exe
+- I predict `cv2.__file__` will be: C:\Users\Adity\miniforge3\envs\ac-cv\python.exe
 
 Then activate:
 
@@ -375,19 +379,19 @@ recorded the "before" numbers in Section 2.
 
 Record from the regenerated `machine-profile.json`:
 
-- Summary line it printed:
-- `python.version`:
-- `python.executable`:
-- `python.virtual_environment`:
-- numpy version and status:
-- opencv version and status:
-- `python -m pip check` result:
+- Summary line it printed: All tracked libraries are available
+- `python.version`: 3.12.13
+- `python.executable`: C:\Users\Adity\miniforge3\envs\ac-cv\python.exe
+- `python.virtual_environment`:  true
+- numpy version and status: version 2.5.1, status available
+- opencv version and status:  version 5.0.0, status available
+
 
 Then answer:
 
-- Did `sys.executable` match your prediction? If not, what did you misunderstand?
+- Did `sys.executable` match your prediction? If not, what did you misunderstand? Yes, the path was the right one as it showed evns/ac-cv this confirmed that the environment is succesfully running
 - Which part of the path proves this Python came from `ac-cv` and not from
-  somewhere else on your machine?
+  somewhere else on your machine? envs/ac-cv
 
 Python, NumPy, and OpenCV must all resolve to paths inside the `ac-cv`
 environment. If any one of them does not, stop here — the rest of the lesson
@@ -431,7 +435,7 @@ legitimately produce different versions. That is the difference between "this
 builds something that works" and "this builds exactly what I had." You will see
 this directly in the next section.
 
-- Predict now: will the rebuild produce identical versions? Why?
+- Predict now: will the rebuild produce identical versions? Why? Yes, as the environment.yml only saves the 7 importnt packages insted of the absolu paths and saved data. THis ensures that the environment is reproducible by anyon on any os so long as they use the environment.yml and run commands to create the exact same environment. By doing this, we ensure that we have a working environment over an environment that is identical but faulty.
 
 ## 6. Rebuild from the file
 
@@ -446,11 +450,11 @@ conda run --no-capture-output --name ac-cv-rebuild python -c "import sys, numpy,
 
 Record:
 
-- Python executable:
-- Python version:
-- NumPy, OpenCV, Matplotlib versions:
-- Differences from `ac-cv`, or `none`:
-- Was your Section 5 prediction right?
+- Python executable: C:\Users\Adity\miniforge3\envs\ac-cv-rebuild\python.exe
+- Python version: 3.12.13
+- NumPy, OpenCV, Matplotlib versions:  2.5.1, 5.0.0, 3.11.1
+- Differences from `ac-cv`, or `none`: ac-cv: none
+- Was your Section 5 prediction right? Yes-but the unpinned modules were luckily idenical today-however, they can change whenver we regenerate the environment, so for today they were identical but could change as soon as tomorrow or next month.
 
 This proves `environment.yml` builds a working environment on this machine
 today. It does not test another operating system, another architecture, a
@@ -482,11 +486,11 @@ print("matplotlib", matplotlib.__version__)
 
 Record:
 
-- `sys.executable` printed by the **notebook**:
-- Is it the same path Section 4 printed in the **terminal**?
+- `sys.executable` printed by the **notebook**:C:\Users\Adity\miniforge3\envs\ac-cv\python.exe
+- Is it the same path Section 4 printed in the **terminal**? yes
 - If your editor runs notebooks (VS Code and similar), open the same notebook
   there, select the `ac-cv` interpreter, run the cell, and record
-  `sys.executable`:
+  `sys.executable`: C:\Users\Adity\miniforge3\envs\ac-cv\python.exe
 
 Shut JupyterLab down with `Ctrl+C` in the terminal, twice. Save the notebook
 with its output visible — that output is your evidence.
@@ -503,9 +507,9 @@ Expected result: `ModuleNotFoundError`.
 
 Record:
 
-- Exact error text:
-- Why the import failed:
-- Why reinstalling OpenCV would not fix it:
+- Exact error text:ModuleNotFoundError: No module named 'lesson00_intentionally_missing'
+- Why the import failed:  No such module exists — it's a made-up name with no package installed anywhere.
+- Why reinstalling OpenCV would not fix it:  No such module exists — it's a made-up name with no package installed anywhere.
 
 Confirm the environment still works:
 
@@ -513,8 +517,8 @@ Confirm the environment still works:
 conda run --name ac-cv python -c "import sys, cv2; print(sys.executable); print(cv2.__file__)"
 ```
 
-- Python path:
-- OpenCV path:
+- Python path: C:\Users\Adity\miniforge3\envs\ac-cv\python.exe
+- OpenCV path:  C:\Users\Adity\miniforge3\envs\ac-cv\Lib\site-packages\cv2\__init__.py
 
 ## 9. Remove the rebuild environment
 
@@ -534,31 +538,46 @@ instead means redoing Sections 3 through 7.
 
 Record:
 
-- Environments listed after removal:
-- What you can still rebuild from the repository, and what is now gone:
+- Environments listed after removal:  base, ac-cv
+- What you can still rebuild from the repository, and what is now gone:  Everything — environment.yml is the recipe. ~2 GB of installed packages (not needed — they're disposable)
+
 
 ## 10. Explain what happened
 
-Answer with direct references to the recorded output. Assistance may include
-drafting, explanation, or review; every factual claim must still trace to the
-executed commands.
+Answer in your own words, referring to your own recorded output. Your agent may
+question your answers; it may not write them.
 
-1. What is inside a Conda environment, and what is not?
+1. What is inside a Conda environment, and what is not? 
+All modules (python to jupyterlab) live inside the environment. The environment has its own libraries, moduls, commands, and etc, but it doesn't have acces to hardware, files, CLIs like bash, shell, etc. 
 2. What exactly changes when you run `conda activate`, and what does it leave
-   unchanged?
+   unchanged? The path in the current terminal changes so that the current PATH of the directory comes first. After that, calling the python command finds the python in that environment first and imports packages from itself.
 3. Which paths in your own records prove Python, NumPy, and OpenCV came from
    `ac-cv`? Quote them.
+   Python	C:\Users\Adity\miniforge3\envs\ac-cv\python.exe
+pip	C:\Users\Adity\miniforge3\envs\ac-cv\Lib\site-packages\pip\__init__.py
+numpy	C:\Users\Adity\miniforge3\envs\ac-cv\Lib\site-packages\numpy\__init__.py
+opencv	C:\Users\Adity\miniforge3\envs\ac-cv\Lib\site-packages\cv2\__init__.py
+matplotlib	C:\Users\Adity\miniforge3\envs\ac-cv\Lib\site-packages\matplotlib\__init__.py
+pillow	C:\Users\Adity\miniforge3\envs\ac-cv\Lib\site-packages\PIL\__init__.py
+jupyterlab	C:\Users\Adity\miniforge3\envs\ac-cv\Lib\site-packages\jupyterlab\__init__.py
 4. What belongs in Git, and what stays on your machine? Why that split?
+The environment.yml and machine-profile.json are committed to git-the recipe belongs in git because knowing the ingredients is important, and the full environment isn't necessary because the recipe rebuilds a working one and takes up barely any space. The machine profile lets others see the system and its installed packages and status. The environment directory stays on machine to save space, ~2GB.
 5. Why can installing into `base` break an unrelated project?
+Base is the default environment-everything downlaoded defaults to it-mening that all modules change versions and nothing stays working. If a project was in base, and I nstalled a newer version for any module, all projects will then have their versions of the same module changed because every project shares base.
 6. Why can installing the same package with both Conda and pip cause a package
    that installs successfully but fails to import?
+   They overwrite each other-running one afte the othr overwrites the previous install.
 7. What did the rebuild prove, and name two things it did not prove.
+The rebuild proved that the recipe works, at least for today-it didn't prove that the recipe is cross compatible on diffrent OSs, and it is not future-proof.
 8. Your notebook and your terminal each printed `sys.executable`. Why can those
-   two differ, and how would you detect it if they did?
+   two differ, and how would you detect it if they did? The terminal's python differs from the notebook because the terminal's commands only affect it. If the the notebook was launched first without activating ac-cv, then its kernal won't use ac-cv. We must activate ac-cv first from conda activate ac-cv because otherwise the kernal won't include it, and the other reason is that we chose the wrong kernel (base or system python insteda of ac-cv).
 9. Compare your before and after machine profiles. Which single field changed
    that best demonstrates the environment is isolated?
-10. If automation ran commands, what files or environments changed, and which
-    output verifies the result?
+   The path changed-the first profile gave miniforge3/python.exe, in section 4, the path changed to C:\Users\Adity\miniforge3\envs\ac-cv\python.exe. The envs/ac-cv demonstrates isolation.
+10. If an agent ran commands for you, what did you allow it to change, and which
+    claim did you verify yourself rather than taking its word for?
+    The machine-profile before and after was something i read after the agent gave results-this let me verify lib status and the path for python with envs/ac-cv confirmed isolation.
+
 
 ## 11. Review and commit
 
@@ -575,9 +594,9 @@ credential.
 
 Record:
 
-- Path to `environment.yml`:
-- Commit hash:
-- Remaining problem, or `none`:
+- Path to `environment.yml`: C:\Users\Adity\Downloads\Official-Website-portfolio\Official-Website-portfolio\environment.yml
+- Commit hash: 556c467
+- Remaining problem, or `none`: none
 
 ## Troubleshooting
 
@@ -610,7 +629,7 @@ Record:
 - `ac-cv-rebuild` is removed.
 - Before and after machine profiles are captured, and the changed field is named.
 - The staged diff contains no environment directory.
-- The activation explanation cites the recorded paths and environment values.
+- You can explain what activation changes without an agent.
 
 ## Documentation
 

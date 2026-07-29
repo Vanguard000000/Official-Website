@@ -1,0 +1,5 @@
+float_max_diff=1
+fixed_point_max_diff=0
+equalization_max_diff=0
+student_grayscale_ms=1.106216
+opencv_grayscale_ms=0.031840

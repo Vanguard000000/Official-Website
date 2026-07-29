@@ -1,5 +1,11 @@
 # AGENTS.md
 
+## Standing Rule
+
+At the start of every session, before any other work, run `git pull` to keep the working directory in sync with `https://github.com/Vanguard000000/Official-Website` (main branch).
+
+---
+
 This file provides guidance for AI agents working on this project.
 
 ## Project Overview
