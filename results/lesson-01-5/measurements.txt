@@ -1,0 +1,12 @@
+branch=main
+sample_photo=grace_hopper.jpg
+numpy_version=2.5.1
+opencv_version=5.0.0
+correlation=-21.000000
+convolution=21.000000
+symmetric_difference=0.000000
+constant_corner_response=-17.000000
+reflect_corner_response=-1.000000
+emboss_kernel_sum=0.000000
+emboss_flip_is_negative=True
+image_count=7
