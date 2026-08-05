@@ -1,0 +1,17 @@
+prediction_otsu_background_leak=no
+measured_otsu_background_leak=True
+prediction_opening_components=decrease
+measured_opening_effect=decrease
+prediction_contour_matches_visible=no
+measured_contour_matches_visible=False
+visible_pills=8
+connected_regions=7
+pixels_per_mm=6.772574
+reference_relative_spread=0.000946
+region=Esomeprazole,status=isolated,shape=elongated,method=rotated_box,aspect_ratio=1.908,circularity=0.745,major_px=86.000,minor_px=45.081,major_mm=12.698,minor_mm=6.656
+region=Panadol,status=isolated,shape=elongated,method=rotated_box,aspect_ratio=2.102,circularity=0.742,major_px=115.079,minor_px=54.745,major_mm=16.992,minor_mm=8.083
+region=Ibuprofen,status=isolated,shape=round,method=equivalent_diameter,aspect_ratio=1.010,circularity=0.850,major_px=90.454,minor_px=90.454,major_mm=13.356,minor_mm=13.356
+region=Fexofenadine+Paracetamol 1,status=merged,shape=merged,method=not_measured,aspect_ratio=1.460,circularity=0.397
+region=Cetirizine,status=isolated,shape=elongated,method=rotated_box,aspect_ratio=2.039,circularity=0.726,major_px=63.692,minor_px=31.231,major_mm=9.404,minor_mm=4.611
+region=Paracetamol 2,status=isolated,shape=elongated,method=rotated_box,aspect_ratio=1.827,circularity=0.722,major_px=106.298,minor_px=58.172,major_mm=15.695,minor_mm=8.589
+region=Loperamide,status=isolated,shape=round,method=equivalent_diameter,aspect_ratio=1.179,circularity=0.772,major_px=39.590,minor_px=39.590,major_mm=5.846,minor_mm=5.846
