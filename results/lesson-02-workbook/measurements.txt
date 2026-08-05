@@ -1,0 +1,10 @@
+opencv_version=5.0.0
+sobel_max_difference=0.00000000
+max_magnitude_difference=0.00000000
+direction_max_difference=0.00000000
+false_edges_before=19384
+false_edges_after=0
+chosen_canny_low=45
+chosen_canny_high=150
+chosen_edge_pixels=5240
+threshold_reason=A low value allows more noise but also better edge detection, while a high value ignores noise but also has less detection because the threshold is higher.
