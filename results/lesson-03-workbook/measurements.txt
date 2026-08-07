@@ -1,0 +1,9 @@
+pixels_per_mm=6.772574
+reference_relative_spread=0.000946
+selected_labels=Fexofenadine+Paracetamol 1
+calibration_accepted=True
+measurement_method=rotated_box
+measurement_major=20.872229
+measurement_minor=14.299437
+measurement_units=mm
+decision_reason=This contour contains two merged pills so individual measurement is not valid, but rotated box was selected because the merged region is elongated with an aspect ratio above 1.2 making it the correct method for the shape even though the result does not represent one pill alone.
